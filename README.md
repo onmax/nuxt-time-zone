@@ -98,7 +98,7 @@ Both are build-time options. The head script inlines the cookie name, so they ar
 The script skips the reload when:
 
 - this tab already reloaded for the same rendered and device zones and the cookie still holds the device's zone. The server ignored the cookie, as cached HTML does, so another reload can't help.
-- this tab already reloaded 3 times. A lost cookie or a new trip reloads again, up to that cap.
+- this tab reloaded 3 times in a row without reaching the device's zone. Any page rendered in the device's zone resets that count, so a lost cookie or a new trip still reloads once.
 - cookies are off, or the cookie doesn't read back
 - sessionStorage is unavailable, since nothing could then stop a loop
 - the page was rendered for a POST or another non-GET request, since a reload would resend it

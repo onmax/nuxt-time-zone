@@ -13,20 +13,24 @@ import { COOKIE_ATTRIBUTES } from './runtime/shared/cookie'
  * - sessionStorage is unavailable, since nothing could then stop a loop;
  * - this tab already reloaded for the same rendered and device zones and the cookie still holds the device's zone:
  *   the server ignored it, as cached HTML does, so another reload can't help;
- * - this tab already reloaded 3 times. A lost cookie or a new trip reloads again, up to that cap.
+ * - this tab reloaded 3 times in a row without reaching the device's zone. A page rendered in the device's zone resets
+ *   that count, and only a reload that happens counts.
  */
 export function headScript(cookieName: string): string {
   return `(function(){try{
 var r=document.documentElement.getAttribute("data-time-zone"),d=Intl.DateTimeFormat().resolvedOptions().timeZone,s,k,n,c,h;
-if(!r||!d||r===d||!navigator.cookieEnabled)return;
+if(!r||!d)return;
+s=sessionStorage;
+if(r===d)return s.removeItem("nuxt-time-zone");
+if(!navigator.cookieEnabled)return;
 Intl.DateTimeFormat(void 0,{timeZone:d});
 c=${JSON.stringify(`${cookieName}=`)}+encodeURIComponent(d);
 h=function(){return("; "+document.cookie+";").indexOf("; "+c+";")>=0};
-s=sessionStorage;k="nuxt-time-zone:"+r+">"+d;n=+s.getItem("nuxt-time-zone")||0;
+k="nuxt-time-zone:"+r+">"+d;n=+s.getItem("nuxt-time-zone")||0;
 if(s.getItem(k)&&h()||n>2)return;
-s.setItem(k,"1");s.setItem("nuxt-time-zone",n+1);
 document.cookie=c+${JSON.stringify(COOKIE_ATTRIBUTES)}+(location.protocol=="https:"?"; Secure":"");
 if(!h())return;
+s.setItem(k,"1");s.setItem("nuxt-time-zone",n+1);
 window.stop();location.reload()
 }catch(e){}})()`.replace(/\n/g, '')
 }

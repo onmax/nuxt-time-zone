@@ -272,12 +272,15 @@ test('15. setup rejects a fallback Intl does not know', async ({ browserName }) 
   expect(stripVTControlCharacters(result.stdout + result.stderr)).toMatch(/`?timeZone\.fallback`? must be an IANA time zone/)
 })
 
-test('16. a cookie lost in the same tab reloads once and recovers', async ({ page, context }) => {
+test('16. a cookie lost in the same tab reloads once and recovers, every time', async ({ page, context }) => {
   await visit(page, '/')
-  // Cleared cookies, or Safari's 7-day cap in a tab that stays open.
-  await context.clearCookies()
-  const documents = await visit(page, '/other')
-  expect(documents).toHaveLength(2)
-  await expectPageZone(page, DEVICE)
-  expect(await cookie(context)).toBe(DEVICE)
+  // Cleared cookies, or Safari's 7-day cap in a tab that stays open. More times than the reload cap, since a page
+  // rendered in the device zone resets it.
+  for (const path of ['/other', '/', '/other', '/']) {
+    await context.clearCookies()
+    const documents = await visit(page, path)
+    expect(documents).toHaveLength(2)
+    await expectPageZone(page, DEVICE)
+    expect(await cookie(context)).toBe(DEVICE)
+  }
 })
