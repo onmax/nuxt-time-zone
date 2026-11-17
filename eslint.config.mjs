@@ -7,7 +7,7 @@ export default createConfigForNuxt({
     stylistic: true,
   },
   dirs: {
-    src: ['./playground'],
+    src: ['./playground', './playground/app'],
   },
 }).prepend({
   ignores: ['**/.nuxt', '**/.output', 'dist', 'test-results', 'playwright-report'],

@@ -45,5 +45,6 @@ jobs:
           retention-days: 7
       - run: pnpm build:playground
       - run: pnpm exec playwright install --with-deps chromium webkit
-      # Drop --pass-with-no-tests once test/e2e has its first spec.
-      - run: pnpm test:e2e --pass-with-no-tests
+      - run: pnpm test:e2e
+      # Scenario 13 again, against nuxi dev
+      - run: pnpm test:e2e:dev
