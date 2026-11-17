@@ -50,7 +50,8 @@
     "nuxt": ">=4.0.0"
   },
   "dependencies": {
-    "@nuxt/kit": "catalog:prod"
+    "@nuxt/kit": "catalog:prod",
+    "h3": "catalog:prod"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "catalog:lint",
