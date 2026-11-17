@@ -41,6 +41,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p playground",
     "test:e2e": "playwright test",
+    "test:e2e:dev": "E2E_DEV=1 playwright test",
     "check:doctor": "vite-doctor . --max-warnings 0 --format text",
     "validate": "pnpm build && publint --strict",
     "build:playground": "nuxi build playground",

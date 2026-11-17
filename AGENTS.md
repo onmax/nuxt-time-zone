@@ -1,6 +1,6 @@
 # nuxt-time-zone
 
-A Nuxt module for the visitor's time zone, extracted from an app's time-zone plugin. [SPEC.md](./SPEC.md) is the source of truth for behaviour: its 15 numbered scenarios are the tests in `test/e2e/scenarios.spec.ts`.
+A Nuxt module for the visitor's time zone, extracted from an app's time-zone plugin. [SPEC.md](./SPEC.md) is the source of truth for behaviour: its 16 numbered scenarios are the tests in `test/e2e/scenarios.spec.ts`.
 
 ## Layout
 
@@ -10,7 +10,7 @@ A Nuxt module for the visitor's time zone, extracted from an app's time-zone plu
 - `src/runtime/composables/useTimeZone.ts`, `src/runtime/server/utils/time-zone.ts`: `useTimeZone()` and `getRequestTimeZone(event)`.
 - `src/runtime/shared/`: `parseTimeZone` and the cookie attributes, used by the app, the server and the head script.
 - `playground/`: a Nuxt app that installs the module from `src/`, with one page per scenario. `/stale` stands in for cached HTML, `/prerendered` and `/spa` set route rules.
-- `test/e2e/scenarios.spec.ts`: one Playwright test per SPEC scenario. Scenario 13 also runs against `nuxi dev` on port 4321.
+- `test/e2e/scenarios.spec.ts`: one Playwright test per SPEC scenario. `pnpm test:e2e:dev` runs scenario 13 against `nuxi dev` on port 4321.
 - `.github/scripts/brand.ts`: draws the logo, favicons and banners into `.github/assets` (`pnpm brand`).
 - `.github/scripts/npm-claim.sh`: run once by hand to claim the npm name and set up trusted publishing.
 
@@ -27,6 +27,7 @@ pnpm validate          # build + publint
 pnpm build:playground
 pnpm exec playwright install chromium webkit
 pnpm test:e2e
+pnpm test:e2e:dev      # scenario 13 against nuxi dev
 ```
 
 ## Rules
