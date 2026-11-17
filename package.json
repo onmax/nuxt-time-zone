@@ -1,0 +1,73 @@
+{
+  "name": "nuxt-time-zone",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@12.16.1",
+  "description": "The visitor's time zone in Nuxt, on the server and the client",
+  "license": "MIT",
+  "author": "onmax",
+  "homepage": "https://github.com/onmax/nuxt-time-zone#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onmax/nuxt-time-zone.git"
+  },
+  "bugs": "https://github.com/onmax/nuxt-time-zone/issues",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "time-zone",
+    "timezone",
+    "ssr",
+    "hydration"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "nuxt-module-build prepare && nuxt-module-build build",
+    "prepack": "pnpm build",
+    "dev": "nuxi dev playground --port 4320",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p playground",
+    "test:e2e": "playwright test",
+    "check:doctor": "vite-doctor . --max-warnings 0 --format text",
+    "validate": "pnpm build && publint --strict",
+    "build:playground": "nuxi build playground",
+    "brand": "node --no-warnings .github/scripts/brand.ts"
+  },
+  "peerDependencies": {
+    "nuxt": ">=4.0.0"
+  },
+  "dependencies": {
+    "@nuxt/kit": "catalog:prod"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "catalog:lint",
+    "@nuxt/module-builder": "catalog:build",
+    "@playwright/test": "catalog:test",
+    "@types/node": "catalog:build",
+    "eslint": "catalog:lint",
+    "nuxt": "catalog:nuxt",
+    "publint": "catalog:build",
+    "sharp": "catalog:brand",
+    "typescript": "catalog:build",
+    "vite-doctor": "catalog:lint",
+    "vue": "catalog:nuxt",
+    "vue-router": "catalog:nuxt",
+    "vue-tsc": "catalog:build"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
