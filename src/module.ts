@@ -47,11 +47,8 @@ export default defineNuxtModule<ModuleOptions>({
         '',
       ].join('\n'),
     })
+    // Nuxt passes its aliases on to Nitro.
     nuxt.options.alias['#nuxt-time-zone/options'] = template.dst
-    nuxt.hook('nitro:config', (config) => {
-      config.alias ||= {}
-      config.alias['#nuxt-time-zone/options'] = template.dst
-    })
     addTypeTemplate({
       filename: 'types/nuxt-time-zone.d.ts',
       getContents: () => [
