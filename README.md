@@ -36,7 +36,7 @@ export default defineEventHandler((event) => {
 })
 ```
 
-Both read the same zone: the page and every request it makes agree on what "today" is.
+On a server-rendered page both read the same zone, so the page and the requests it makes agree on what "today" is. Prerendered and cached pages are the exception, see [Caveats](#caveats).
 
 ## Install
 
@@ -59,11 +59,11 @@ It needs Nuxt 4.
 
 `useTimeZone()` is auto-imported in the app. It returns a read-only ref holding an IANA zone such as `Europe/Madrid`. The value doesn't change during a page load, so you can use it in `computed`, stores and `useFetch` keys without watching it.
 
-`getRequestTimeZone(event)` is auto-imported in Nitro. It returns the zone of the page that sent the request: the cookie when Intl knows it, otherwise `fallback`.
+`getRequestTimeZone(event)` is auto-imported in Nitro. It returns the zone in the request's cookie when Intl knows it, otherwise `fallback`. On a server-rendered page that is the page's zone.
 
 ### `<NuxtTime>`
 
-Omit `time-zone`. `<NuxtTime>` then formats in the device's zone, before and during hydration, which after the reload is the zone this module gives you anyway. Pass `useTimeZone().value` only to pin a zone, for example to show times in an account's zone instead of the visitor's.
+Omit `time-zone`. `<NuxtTime>` then formats in the device's zone, before and during hydration, which after the reload is the zone this module gives you anyway. Pass `useTimeZone().value` only to pin it to the page's zone, for example on a prerendered page that shows the fallback. To show another zone, such as an account's, pass that zone directly.
 
 ```vue
 <NuxtTime :datetime="order.createdAt" date-style="medium" time-style="short" />
@@ -92,11 +92,13 @@ Both are build-time options. The head script inlines the cookie name, so they ar
 
 1. The server reads the cookie. If Intl knows the zone it uses it, otherwise `fallback`. It renders with that zone, puts it in the payload and on `<html data-time-zone>`.
 2. The head script runs first in `<head>`. It reads the device zone with `Intl.DateTimeFormat().resolvedOptions().timeZone` and compares it with `data-time-zone`. If they match, it does nothing.
-3. If they differ, it writes the cookie (`Path=/; Max-Age=31536000; SameSite=Lax`, plus `Secure` on https), checks that the cookie reads back, and reloads. The second response is rendered in the device zone.
+3. If they differ, it writes the cookie (`Path=/; Max-Age=31536000; SameSite=Lax`, plus `Secure` on https), checks that the cookie reads back, calls `window.stop()` so the browser never paints the old body, and reloads. The second response is rendered in the device zone.
 4. On the client, `useTimeZone()` returns the zone from the payload, the one the server rendered with. It never reads the cookie, so hydration matches the HTML.
 
-The script reloads at most once per tab session for the same rendered and device zones, and it skips the reload when:
+The script skips the reload when:
 
+- this tab already reloaded for the same rendered and device zones and the cookie still holds the device's zone. The server ignored the cookie, as cached HTML does, so another reload can't help.
+- this tab already reloaded 3 times. A lost cookie or a new trip reloads again, up to that cap.
 - cookies are off, or the cookie doesn't read back
 - sessionStorage is unavailable, since nothing could then stop a loop
 - the page was rendered for a POST or another non-GET request, since a reload would resend it
@@ -108,7 +110,7 @@ A zone change while a tab stays open, say after a flight, shows up on the next p
 
 ## Caveats
 
-- **Cached HTML.** Prerendered pages, `swr`, `isr`, `cache` route rules and CDNs serve one zone to everyone. Prerendered pages use `fallback` and never reload. Other cached pages reload once per tab session and then keep the cached zone. Don't cache pages that show zone-dependent values, or make the cache vary on the `Cookie` header.
+- **Cached HTML.** Prerendered pages, `swr`, `isr`, `cache` route rules and CDNs serve one zone to everyone. Prerendered pages use `fallback` and never reload. Other cached pages reload once per tab session and then keep the cached zone. Once the cookie exists, API routes on such a page use the device's zone through `getRequestTimeZone` while the page shows the cached or fallback zone. Don't cache pages that show zone-dependent values, or make the cache vary on the `Cookie` header. If you do cache them, send `useTimeZone().value` with the requests they make, so the API uses the page's zone.
 - **Safari caps cookies written by JavaScript at 7 days.** After a week away the cookie is gone, and the first visit reloads once.
 - **Cross-site frames.** Inside an iframe on another site, the browser usually blocks the cookie. The page then doesn't reload and uses `fallback`.
 - **A cookie that changes during a page load.** Another tab can rewrite the cookie. The open page keeps its zone, but its later requests send the new cookie, so `getRequestTimeZone` can disagree with `useTimeZone` until the next load.
@@ -120,7 +122,7 @@ Each row is a numbered scenario in [SPEC.md](./SPEC.md) and a Playwright test in
 
 | #   | Check                                                                                                        |
 | --- | ------------------------------------------------------------------------------------------------------------ |
-| 1   | A first visit reloads exactly once. Then the HTML, the cookie, `useTimeZone`, an API route and `<NuxtTime>` show the device zone. |
+| 1   | A first visit reloads exactly once, and the first document never paints. Then the HTML, the cookie, `useTimeZone`, an API route and `<NuxtTime>` show the device zone. |
 | 2   | A return visit doesn't reload.                                                                               |
 | 3   | A device in the fallback zone doesn't reload and gets no cookie.                                             |
 | 4   | An invalid cookie renders the fallback, then reloads once with the cookie fixed.                             |
@@ -132,9 +134,10 @@ Each row is a numbered scenario in [SPEC.md](./SPEC.md) and a Playwright test in
 | 10  | A page rendered for a form POST doesn't reload.                                                              |
 | 11  | An `ssr: false` page uses the device zone and writes the cookie.                                             |
 | 12  | A cookie changed by another tab doesn't change the zone of an open page.                                     |
-| 13  | Zone-dependent text and classes hydrate without mismatch warnings, in production and in `nuxi dev`.          |
+| 13  | Zone-dependent text and classes hydrate without mismatch warnings, in production and in `nuxi dev` (`pnpm test:e2e:dev`). |
 | 14  | `<NuxtTime>` without `time-zone` shows the device zone, even on a page rendered in the fallback.              |
 | 15  | Setup throws for a `fallback` Intl doesn't know.                                                             |
+| 16  | A cookie lost while the tab stays open, say cleared or expired, reloads once and recovers.                   |
 
 ## Status
 
@@ -153,7 +156,8 @@ pnpm dev               # playground on http://localhost:4320
 pnpm lint
 pnpm typecheck
 pnpm build:playground
-pnpm test:e2e          # the 15 scenarios, Chromium and WebKit
+pnpm test:e2e          # the 16 scenarios, Chromium and WebKit
+pnpm test:e2e:dev      # scenario 13 against nuxi dev
 ```
 
 ## License

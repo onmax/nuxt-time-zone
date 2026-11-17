@@ -71,9 +71,49 @@ function blockCookieWrites(page: Page) {
   })
 }
 
+interface DocumentLog {
+  contentLoaded: boolean
+  paints: string[]
+}
+
+// Logs, per document, whether it fired DOMContentLoaded and which paint entries it recorded, in sessionStorage so
+// the log survives the reload.
+function logDocuments(page: Page) {
+  return page.addInitScript(() => {
+    const log: DocumentLog[] = JSON.parse(sessionStorage.getItem('test:documents') || '[]')
+    const entry: DocumentLog = { contentLoaded: false, paints: [] }
+    log.push(entry)
+    const save = () => sessionStorage.setItem('test:documents', JSON.stringify(log))
+    const paints = () => {
+      entry.paints = performance.getEntriesByType('paint').map(paint => paint.name)
+      save()
+    }
+    save()
+    new PerformanceObserver(paints).observe({ type: 'paint', buffered: true })
+    addEventListener('pagehide', paints)
+    document.addEventListener('DOMContentLoaded', () => {
+      entry.contentLoaded = true
+      save()
+    })
+  })
+}
+
 test('1. first visit in another zone reloads once and renders in the device zone', async ({ page, context }) => {
+  await logDocuments(page)
   const documents = await visit(page, '/')
   expect(documents).toHaveLength(2)
+
+  // The script blocks in <head>, before any body markup, and the first document stops before it paints.
+  const first = documents[0]!.html
+  const script = first.indexOf('<script data-hid="nuxt-time-zone">')
+  expect(first.indexOf('<head>')).toBeGreaterThanOrEqual(0)
+  expect(script).toBeGreaterThan(first.indexOf('<head>'))
+  expect(script).toBeLessThan(first.indexOf('</head>'))
+  expect(first.indexOf('</head>')).toBeLessThan(first.indexOf('<body'))
+  const log: DocumentLog[] = await page.evaluate(() => JSON.parse(sessionStorage.getItem('test:documents')!))
+  expect(log).toHaveLength(2)
+  expect(log[0]).toEqual({ contentLoaded: false, paints: [] })
+  expect(log[1]!.contentLoaded).toBe(true)
 
   const html = documents.at(-1)!.html
   expect(html).toContain(`data-time-zone="${DEVICE}"`)
@@ -230,4 +270,14 @@ test('15. setup rejects a fallback Intl does not know', async ({ browserName }) 
   rmSync(new URL('../fixtures/invalid-fallback/.nuxt', import.meta.url), { recursive: true, force: true })
   expect(result.status).not.toBe(0)
   expect(stripVTControlCharacters(result.stdout + result.stderr)).toMatch(/`?timeZone\.fallback`? must be an IANA time zone/)
+})
+
+test('16. a cookie lost in the same tab reloads once and recovers', async ({ page, context }) => {
+  await visit(page, '/')
+  // Cleared cookies, or Safari's 7-day cap in a tab that stays open.
+  await context.clearCookies()
+  const documents = await visit(page, '/other')
+  expect(documents).toHaveLength(2)
+  await expectPageZone(page, DEVICE)
+  expect(await cookie(context)).toBe(DEVICE)
 })
