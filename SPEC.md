@@ -1,0 +1,58 @@
+# Spec
+
+The visitor's IANA time zone in a Nuxt app, the same on the server and the client for the whole page load.
+
+## Problem
+
+A server render has no idea which zone the visitor is in. An app that turns instants into days ("today", "due tomorrow", a calendar grid) or wall-clock times either renders in a default zone and then changes text after hydration, or renders in the device zone on the client only and gets hydration mismatches.
+
+The app this module comes from kept the zone in a `tz` cookie. The server rendered in the cookie zone (UTC without one), hydration used the same zone, and after hydration the device zone took over and the cookie followed. A first visit, and the first visit after travel, rendered UTC and then the text jumped. Its last version changed the model: one zone per page load, and when the device zone differs on load, write the cookie and reload once.
+
+Prior art:
+
+- Nuxt's [`<NuxtTime>`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/app/components/nuxt-time.vue) formats one date. Before Vue hydrates, an `onPrehydrate` script reformats its text in the browser's locale and zone; while hydrating, the component reads the date and locale back from its own server-rendered element, so its text matches the rewritten DOM. That fixes display text with a script that runs before hydration and hydrating from what the server rendered. It gives no zone to computed values, stores or API routes.
+- [`@epic-web/client-hints`](https://github.com/epicweb-dev/client-hints/blob/main/src/index.ts) puts the zone in a cookie from a script in `<head>` and reloads when the cookie changed. It checks `navigator.cookieEnabled`, checks that a test cookie reads back, and stops after three reloads per tab session.
+
+## Scope
+
+One zone per page load: what the server rendered with. No setter for a user-chosen zone, no switch after hydration, no component of its own. Plain `<NuxtTime>` without `time-zone` already formats in the device zone before and during hydration.
+
+## Behaviour
+
+Each numbered scenario is one Playwright test in `test/e2e/scenarios.spec.ts`, run against a production build of `playground/` in Chromium and WebKit, with the device in `Europe/Madrid` and the fallback `UTC` unless a scenario says otherwise. Scenario 13 also runs against `nuxi dev`. A scenario is done when its test passes in all of them.
+
+1. **First visit in another zone.** No cookie: the server renders the fallback, the head script writes the cookie and the page reloads exactly once. The second response's HTML, the cookie, `useTimeZone()`, `getRequestTimeZone(event)` in an API route and `<NuxtTime>` all use the device zone.
+2. **Return visit.** With the cookie set, a new page load doesn't reload.
+3. **Device in the fallback zone.** No reload, and no cookie is written: without one the server already renders the device's zone.
+4. **Invalid cookie.** A cookie Intl doesn't know renders the fallback, then reloads once with the cookie replaced.
+5. **Cookies off.** `navigator.cookieEnabled` is false: no reload, the fallback zone.
+6. **Cookie doesn't read back.** The browser drops the write (blocked cookies, a cross-site frame): no reload.
+7. **No sessionStorage.** Reading it throws: no reload and no cookie, since nothing could stop a loop.
+8. **HTML that keeps the old zone.** A cache that ignores the cookie (swr, isr, a CDN) keeps serving the fallback. The page reloads once, then stays on the fallback for that pair of zones for the rest of the tab session.
+9. **Prerendered page.** The HTML is the same for everyone, so it never reloads and uses the fallback.
+10. **Non-GET render.** A page rendered for a form POST doesn't reload, since a reload would resend the form.
+11. **`ssr: false`.** Nothing was rendered: the app uses the device zone and writes the cookie, without a reload.
+12. **Fixed for the page load.** A cookie changed while the page is open (another tab) doesn't change `useTimeZone()`, also across client-side navigation. The next load renders the new cookie and reloads once if the device disagrees.
+13. **Hydration.** Text and a class that depend on the zone hydrate without mismatch warnings, in production and in `nuxi dev`, on pages rendered in the device zone, prerendered and stale.
+14. **`<NuxtTime>`.** Without `time-zone` it shows the device zone, even on a page rendered in the fallback.
+15. **Invalid fallback.** Module setup throws when Intl doesn't know `fallback`.
+
+## Shape
+
+```ts
+// nuxt.config.ts, config key `timeZone`
+timeZone: { cookieName?: string /* 'tz' */, fallback?: string /* 'UTC' */ }
+
+useTimeZone(): Readonly<Ref<string>> // app, auto-imported
+getRequestTimeZone(event: H3Event): string // Nitro, auto-imported
+```
+
+- **Head script** (`src/head-script.ts`). A static inline script, first in `<head>`, so it runs before the body is parsed and before anything paints. It is the only writer of the cookie on server-rendered pages. It reads the device zone from `Intl.DateTimeFormat().resolvedOptions().timeZone` and compares it with `<html data-time-zone>`, the zone the server rendered with, never with the live cookie. When they differ it writes the cookie (`Path=/; Max-Age=31536000; SameSite=Lax`, `Secure` on https), checks it reads back, and reloads. It does nothing when `data-time-zone` is missing, the device zone is missing or unknown to Intl, `navigator.cookieEnabled` is false, the cookie doesn't read back, sessionStorage throws, or this tab already reloaded for the same rendered and device zones.
+- **Server plugin.** The zone is the cookie when Intl knows it, else `fallback`. It goes into the payload (`useState`) and into `<html data-time-zone>`, the latter only for GET renders that aren't prerendered.
+- **Client plugin.** The zone is the one in the payload. It never reads the cookie. Without a server render (`ssr: false`) it uses the device zone and writes the cookie.
+- **`getRequestTimeZone(event)`.** The cookie when Intl knows it, else `fallback`: the zone of the page that sent the request.
+- `cookieName` and `fallback` are build-time constants in a template (`#nuxt-time-zone/options`), not runtime config, because the head script inlines the cookie name. The zone is checked with Intl, not Temporal.
+
+## Out of scope
+
+A user-chosen zone that overrides the device, following a zone change while a tab stays open, and per-visitor HTML from caches. The README says how to cache.
