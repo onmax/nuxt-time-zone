@@ -52,23 +52,31 @@ const tile = (size: number) => logo(size, 0)
 const font = 'ui-sans-serif, system-ui, -apple-system, \'Segoe UI\', Helvetica, Arial, sans-serif'
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
-// On the right, one instant in three zones: the same render, read where each visitor is.
-const zones = [
-  ['Madrid', 'Europe/Madrid', '14:30'],
-  ['New York', 'America/New_York', '08:30'],
-  ['Tokyo', 'Asia/Tokyo', '22:30'],
+// On the right, the API the way VueUse shows one: the call, and what it returns as a comment. The page and the server
+// route read the same zone.
+type Token = [text: string, role?: 'key' | 'fn' | 'str' | 'note']
+const code: Token[][] = [
+  [['// app/pages/index.vue', 'note']],
+  [['const ', 'key'], ['timeZone = '], ['useTimeZone', 'fn'], ['()']],
+  [['timeZone.value '], ['// \'Europe/Madrid\'', 'str']],
+  [],
+  [['// server/api/today.get.ts', 'note']],
+  [['getRequestTimeZone', 'fn'], ['(event)']],
+  [['// \'Europe/Madrid\'', 'str']],
 ]
-const clocks = (t: Theme) => zones
-  .map(([city, zone, time], r) => {
-    const y = 120 + r * 92
-    return `<text x="840" y="${y}" font-family="${font}" font-size="22" fill="${t.fg}">${city}</text>
-<text x="840" y="${y + 24}" font-family="${mono}" font-size="14" fill="${t.faint}">${zone}</text>
-<text x="1200" y="${y + 10}" text-anchor="end" font-family="${mono}" font-size="40" font-weight="600" fill="${r === 0 ? t.lead : t.fg}">${time}</text>
-<rect x="840" y="${y + 44}" width="360" height="1" fill="${t.faint}" opacity=".25"/>`
-  })
-  .join('\n')
+const panel = (t: Theme) => {
+  const fill = { key: t.muted, fn: t.fg, str: t.lead, note: t.faint }
+  return code
+    .map((line, i) => line.length === 0
+      ? ''
+      : `<text x="848" y="${112 + i * 34}" xml:space="preserve">${line
+        .map(([text, role]) => `<tspan fill="${role ? fill[role] : t.muted}"${role === 'fn' ? ' font-weight="600"' : ''}>${text}</tspan>`)
+        .join('')}</text>`)
+    .filter(Boolean)
+    .join('\n')
+}
 
-// The mark and name on the left, a line and the config under them; the clocks on the right.
+// The mark and name on the left, a line and the config under them; the code on the right.
 const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
 <title id="t">nuxt-time-zone: times in the visitor's time zone, from the first server render</title>
 <style>${style(t)}</style>
@@ -76,7 +84,9 @@ const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="128
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="${t.bg}"/>
 <rect x="800" y="0" width="480" height="400" fill="${t.panel}"/>
-${clocks(t)}
+<g font-family="${mono}" font-size="18">
+${panel(t)}
+</g>
 <g transform="translate(66 62) scale(.66)">
 ${mark}
 </g>

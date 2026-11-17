@@ -5,18 +5,14 @@
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="#0f1612"/>
 <rect x="800" y="0" width="480" height="400" fill="#171f1b"/>
-<text x="840" y="120" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#f6f5f1">Madrid</text>
-<text x="840" y="144" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#89928d">Europe/Madrid</text>
-<text x="1200" y="130" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#3cde93">14:30</text>
-<rect x="840" y="164" width="360" height="1" fill="#89928d" opacity=".25"/>
-<text x="840" y="212" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#f6f5f1">New York</text>
-<text x="840" y="236" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#89928d">America/New_York</text>
-<text x="1200" y="222" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#f6f5f1">08:30</text>
-<rect x="840" y="256" width="360" height="1" fill="#89928d" opacity=".25"/>
-<text x="840" y="304" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#f6f5f1">Tokyo</text>
-<text x="840" y="328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#89928d">Asia/Tokyo</text>
-<text x="1200" y="314" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#f6f5f1">22:30</text>
-<rect x="840" y="348" width="360" height="1" fill="#89928d" opacity=".25"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">
+<text x="848" y="112" xml:space="preserve"><tspan fill="#89928d">// app/pages/index.vue</tspan></text>
+<text x="848" y="146" xml:space="preserve"><tspan fill="#b7c0bc">const </tspan><tspan fill="#b7c0bc">timeZone = </tspan><tspan fill="#f6f5f1" font-weight="600">useTimeZone</tspan><tspan fill="#b7c0bc">()</tspan></text>
+<text x="848" y="180" xml:space="preserve"><tspan fill="#b7c0bc">timeZone.value </tspan><tspan fill="#3cde93">// 'Europe/Madrid'</tspan></text>
+<text x="848" y="248" xml:space="preserve"><tspan fill="#89928d">// server/api/today.get.ts</tspan></text>
+<text x="848" y="282" xml:space="preserve"><tspan fill="#f6f5f1" font-weight="600">getRequestTimeZone</tspan><tspan fill="#b7c0bc">(event)</tspan></text>
+<text x="848" y="316" xml:space="preserve"><tspan fill="#3cde93">// 'Europe/Madrid'</tspan></text>
+</g>
 <g transform="translate(66 62) scale(.66)">
 <circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
 <ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
