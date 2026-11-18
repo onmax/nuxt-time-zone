@@ -34,7 +34,7 @@ Needs Nuxt 4. Not on npm yet, see [Status](#status).
 
 ```ts
 // app
-const timeZone = useTimeZone() // Readonly<Ref<'Europe/Madrid'>>
+const timeZone = useTimeZone() // Readonly<Ref<string>>, e.g. 'Europe/Madrid'
 
 // server
 const timeZone = getRequestTimeZone(event) // 'Europe/Madrid'
