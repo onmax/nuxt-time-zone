@@ -7,13 +7,13 @@
 </h1>
 
 [![CI](https://comark-ui.onmax.me/badge.svg?source=github-actions&repository=onmax%2Fnuxt-time-zone&workflow=ci.yml&icon=github)](https://github.com/onmax/nuxt-time-zone/actions/workflows/ci.yml)
-[![status: private preview](https://comark-ui.onmax.me/badge.svg?label=status&value=private%20preview)](#status)
+[![npm version](https://comark-ui.onmax.me/badge.svg?source=npm-version&package=nuxt-time-zone)](https://npmjs.com/package/nuxt-time-zone)
 [![for Nuxt 4](https://comark-ui.onmax.me/badge.svg?label=for&value=Nuxt%204)](https://nuxt.com)
 [![license: MIT](https://comark-ui.onmax.me/badge.svg?label=license&value=MIT)](./LICENSE)
 
 The visitor's time zone, the same on the server and the client. No hydration mismatches on dates.
 
-[![Watch the 90-second explainer](./.github/assets/explainer-poster.png)](./.github/assets/explainer.mp4)
+https://github.com/user-attachments/assets/fa89e04d-260b-422c-b670-acdda944b8cb
 
 ## Install
 
@@ -27,8 +27,6 @@ export default defineNuxtConfig({
   modules: ['nuxt-time-zone'],
 })
 ```
-
-Needs Nuxt 4. Not on npm yet, see [Status](#status).
 
 ## Usage
 
@@ -70,10 +68,6 @@ No reload on prerendered, `ssr: false` or POST pages, when cookies are blocked, 
 ## Tests
 
 17 scenarios in [SPEC.md](./SPEC.md), each a Playwright test in Chromium and WebKit.
-
-## Status
-
-Private preview. Not on npm yet.
 
 ## Credit
 
