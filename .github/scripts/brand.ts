@@ -49,14 +49,16 @@ const tile = (size: number) => logo(size, 0)
 
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
-// The banner is the API itself: the composable as a call, centred, and the package name under it.
+// The banner is the API itself: the mark on top, the composable as a call, centred, and the package name under it.
 const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
 <title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
+<style>${style(t)}</style>
 <rect width="1280" height="400" fill="${t.bg}"/>
-<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
-<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
+<g transform="translate(576 36)">${mark}</g>
+<text x="640" y="268" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
+<text x="640" y="332" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
 </g>
 </svg>
 `
