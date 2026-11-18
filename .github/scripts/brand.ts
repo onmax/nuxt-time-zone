@@ -25,9 +25,9 @@ const dark = {
 type Theme = typeof light
 
 // The mark, in a 128 box. Strokes are classes, so an SVG favicon can switch them with prefers-color-scheme.
-const mark = `<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
-<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
+const mark = `<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
 <path class="grid" d="M20 64 H108" stroke-width="4"/>
+<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
 <path class="hand" d="M64 64 V34" stroke-width="7" stroke-linecap="round"/>
 <path class="lead" d="M64 64 L86 76" stroke-width="8" stroke-linecap="round"/>
 <circle class="pin" cx="64" cy="64" r="6"/>`
@@ -49,14 +49,16 @@ const tile = (size: number) => logo(size, 0)
 
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
-// The banner is the API itself: the composable as a call, centred, and the package name under it.
+// The banner is the API itself: the mark on top, the composable as a call, centred, and the package name under it.
 const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
 <title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
+<style>${style(t)}</style>
 <rect width="1280" height="400" fill="${t.bg}"/>
-<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
-<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
+<g transform="translate(576 36)">${mark}</g>
+<text x="640" y="268" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
+<text x="640" y="332" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
 </g>
 </svg>
 `
