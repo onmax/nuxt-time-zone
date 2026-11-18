@@ -1,4 +1,4 @@
-import { COOKIE_ATTRIBUTES } from './runtime/shared/cookie'
+import { COOKIE_ATTRIBUTES } from './shared/cookie'
 
 /**
  * Runs first in `<head>`, before the body is parsed. When the page was rendered in another zone than the device's, it
@@ -7,7 +7,8 @@ import { COOKIE_ATTRIBUTES } from './runtime/shared/cookie'
  * and never throws.
  *
  * It does nothing when:
- * - the server left out `data-time-zone`: `ssr: false`, a non-GET render, or prerendered HTML;
+ * - the page has no `data-time-zone`. The server plugin adds this script and that attribute only to GET renders, so
+ *   `ssr: false`, non-GET and prerendered pages ship neither;
  * - the zones match, or the device reports no zone, or one Intl doesn't know;
  * - cookies are off, or the cookie doesn't read back (blocked, or a cross-site frame);
  * - sessionStorage is unavailable, since nothing could then stop a loop;

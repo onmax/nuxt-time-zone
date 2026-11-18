@@ -5,7 +5,7 @@
 ## Rules
 
 - A behaviour change starts in SPEC.md, then its scenario test, then the code. Run the e2e tests in Chromium and WebKit.
-- `src/head-script.ts` ships inline in every page: keep it small and keep every guard.
+- `src/runtime/head-script.ts` ships inline in every server-rendered page: keep it small and keep every guard.
 - The client takes the zone from the payload and never reads the cookie.
 - Never touch `window` or `document` during SSR.
 - Run `pnpm dev:prepare` before `pnpm typecheck`.

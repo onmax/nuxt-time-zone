@@ -1,5 +1,4 @@
 import { addImports, addPlugin, addServerImports, addTemplate, addTypeTemplate, createResolver, defineNuxtModule } from '@nuxt/kit'
-import { headScript } from './head-script'
 import { parseTimeZone } from './runtime/shared/time-zone'
 
 export interface ModuleOptions {
@@ -59,13 +58,6 @@ export default defineNuxtModule<ModuleOptions>({
         '',
       ].join('\n'),
     }, { nuxt: true, nitro: true })
-
-    nuxt.options.app.head.script ||= []
-    nuxt.options.app.head.script.unshift({
-      key: 'nuxt-time-zone',
-      innerHTML: headScript(options.cookieName),
-      tagPriority: 'critical',
-    })
 
     addPlugin(resolver.resolve('./runtime/plugin.server'))
     addPlugin(resolver.resolve('./runtime/plugin.client'))
