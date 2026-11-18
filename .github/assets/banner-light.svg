@@ -2,8 +2,8 @@
 <title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
-<rect width="1280" height="400" fill="#f6f5f1"/>
-<text x="640" y="222" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="#56645e">use</tspan><tspan fill="#14201b">TimeZone</tspan><tspan fill="#126b47">()</tspan></text>
-<text x="640" y="290" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#56645e">nuxt-time-zone</text>
+<rect width="1280" height="400" fill="#ffffff"/>
+<text x="640" y="222" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="#737373">use</tspan><tspan fill="#171717">TimeZone</tspan><tspan fill="#00c16a">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#737373">nuxt-time-zone</text>
 </g>
 </svg>

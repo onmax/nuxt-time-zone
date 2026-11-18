@@ -6,23 +6,21 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import sharp from 'sharp'
 
-// Picked in oklch and written as hex, because librsvg, which renders the PNGs, doesn't read oklch().
-// Contrast is WCAG 2 against each theme's background, or the panel where noted.
+// Nuxt's design tokens (nuxt.com/design.md): true neutral surfaces and Nuxt green as the one accent, `green-500` in
+// light mode and `green-400` in dark. Text follows Nuxt UI: highlighted for the name, muted and dimmed around it.
 const light = {
-  bg: '#f6f5f1', // oklch(0.97 0.006 100)
-  panel: '#e9e8e1', // oklch(0.93 0.01 100)
-  fg: '#14201b', // oklch(0.23 0.02 165), 15.4:1
-  muted: '#46534d', // oklch(0.43 0.02 165), 7.4:1
-  faint: '#56645e', // oklch(0.49 0.02 165), 5.1:1 on the panel
-  lead: '#126b47', // oklch(0.47 0.1 160), 5.3:1 on the panel, Nuxt's green darkened to read on paper
+  bg: '#ffffff', // white
+  fg: '#171717', // neutral-900, text-highlighted
+  muted: '#737373', // neutral-500, text-muted
+  faint: '#a3a3a3', // neutral-400, text-dimmed
+  lead: '#00c16a', // green-500
 }
 const dark = {
-  bg: '#0f1612', // oklch(0.19 0.012 165)
-  panel: '#171f1b', // oklch(0.23 0.014 165)
-  fg: '#f6f5f1', // oklch(0.97 0.006 100), 16.8:1
-  muted: '#b7c0bc', // oklch(0.8 0.012 165), 9.9:1
-  faint: '#89928d', // oklch(0.65 0.012 165), 5.3:1 on the panel
-  lead: '#3cde93', // oklch(0.8 0.17 158), 9.7:1 on the panel, close to Nuxt's green
+  bg: '#0a0a0a', // neutral-950, Nuxt black
+  fg: '#ffffff', // white, text-highlighted
+  muted: '#a3a3a3', // neutral-400, text-muted
+  faint: '#737373', // neutral-500, text-dimmed
+  lead: '#00dc82', // green-400, Nuxt green
 }
 type Theme = typeof light
 
@@ -57,8 +55,8 @@ const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="128
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="${t.bg}"/>
-<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.faint}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
-<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.faint}">nuxt-time-zone</text>
+<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
 </g>
 </svg>
 `
