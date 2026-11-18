@@ -65,7 +65,7 @@ No reload on prerendered, `ssr: false` or POST pages, when cookies are blocked, 
 ## Caveats
 
 - **Cached HTML** serves one zone to everyone. Don't cache pages with dates, or vary the cache on `Cookie`.
-- **The API can disagree with the page.** `getRequestTimeZone` reads each request's cookie. On a prerendered or cached page, or after another tab changes the cookie, it can return another zone than `useTimeZone()`. When they must agree, send `useTimeZone().value` with the request.
+- **The API can disagree with the page.** `getRequestTimeZone` reads each request's cookie. On a prerendered or cached page, when the cookie is blocked, or after another tab changes it, it can return another zone than `useTimeZone()`. When they must agree, send `useTimeZone().value` with the request.
 - **Safari** expires the cookie after 7 days, so the next visit reloads once.
 - **Strict CSP** must allow the inline head script, by hash or nonce.
 
