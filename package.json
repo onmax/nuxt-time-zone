@@ -1,7 +1,7 @@
 {
   "name": "nuxt-time-zone",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@12.16.1",
   "description": "The visitor's time zone in Nuxt, on the server and the client",
   "license": "MIT",
