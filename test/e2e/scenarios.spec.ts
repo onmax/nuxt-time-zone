@@ -105,10 +105,14 @@ test('1. first visit in another zone reloads once and renders in the device zone
 
   // The script blocks in <head>, before any body markup, and the first document stops before it paints.
   const first = documents[0]!.html
+  const csp = first.indexOf('<meta http-equiv="content-security-policy"')
   const script = first.indexOf('<script data-hid="nuxt-time-zone">')
+  const hostScript = first.indexOf('<script data-hid="host-critical">')
   expect(first.indexOf('<head>')).toBeGreaterThanOrEqual(0)
-  expect(script).toBeGreaterThan(first.indexOf('<head>'))
-  expect(script).toBeLessThan(first.indexOf('</head>'))
+  expect(csp).toBeGreaterThan(first.indexOf('<head>'))
+  expect(script).toBeGreaterThan(csp)
+  expect(hostScript).toBeGreaterThan(script)
+  expect(hostScript).toBeLessThan(first.indexOf('</head>'))
   expect(first.indexOf('</head>')).toBeLessThan(first.indexOf('<body'))
   const log: DocumentLog[] = await page.evaluate(() => JSON.parse(sessionStorage.getItem('test:documents')!))
   expect(log).toHaveLength(2)
@@ -199,6 +203,7 @@ test('9. a prerendered page does not reload and uses the fallback', async ({ pag
   const documents = await visit(page, '/prerendered')
   expect(documents).toHaveLength(1)
   expect(documents[0]!.html).not.toContain('data-time-zone=')
+  expect(documents[0]!.html).not.toContain('<script data-hid="nuxt-time-zone">')
   await expectPageZone(page, FALLBACK)
   expect(await cookie(context)).toBeUndefined()
 })
@@ -211,12 +216,16 @@ test('10. a page rendered for a POST does not reload', async ({ page }) => {
   await page.waitForURL('**/posted', { waitUntil: 'commit' })
   await settled(page)
   expect(documents.map(d => d.method)).toEqual(['POST'])
+  expect(documents[0]!.html).not.toContain('data-time-zone=')
+  expect(documents[0]!.html).not.toContain('<script data-hid="nuxt-time-zone">')
   await expectPageZone(page, FALLBACK)
 })
 
 test('11. an `ssr: false` page uses the device zone and writes the cookie', async ({ page, context }) => {
   const documents = await visit(page, '/spa')
   expect(documents).toHaveLength(1)
+  expect(documents[0]!.html).not.toContain('data-time-zone=')
+  expect(documents[0]!.html).not.toContain('<script data-hid="nuxt-time-zone">')
   await expectPageZone(page, DEVICE)
   expect(await cookie(context)).toBe(DEVICE)
   expect(await apiZone(page)).toBe(DEVICE)

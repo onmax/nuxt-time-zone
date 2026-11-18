@@ -1,13 +1,13 @@
-import { COOKIE_ATTRIBUTES } from './runtime/shared/cookie'
+import { COOKIE_ATTRIBUTES } from './shared/cookie'
 
 /**
- * Runs first in `<head>`, before the body is parsed. When the page was rendered in another zone than the device's, it
+ * Runs in `<head>` before the body is parsed. When the page was rendered in another zone than the device's, it
  * writes the cookie and reloads, so the next response is rendered in the device's zone. `window.stop()` first stops
- * the parser, so the browser never paints the body rendered in the old zone. It ships in every page, so it stays small
- * and never throws.
+ * the parser, so the browser never paints the body rendered in the old zone. It stays small and never throws.
  *
  * It does nothing when:
- * - the server left out `data-time-zone`: `ssr: false`, a non-GET render, or prerendered HTML;
+ * - the page has no `data-time-zone`. The server plugin adds this script and that attribute only to GET renders, so
+ *   `ssr: false`, non-GET and prerendered pages ship neither;
  * - the zones match, or the device reports no zone, or one Intl doesn't know;
  * - cookies are off, or the cookie doesn't read back (blocked, or a cross-site frame);
  * - sessionStorage is unavailable, since nothing could then stop a loop;
