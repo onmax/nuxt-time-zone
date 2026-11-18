@@ -1,6 +1,6 @@
 // Draws the brand from one mark, a globe with clock hands: a meridian and the equator on a round face, and the hands
 // over them, the hour hand in green. One instant, read in the visitor's zone. It makes the logo, the favicons, the icons
-// a phone and a shared link show, and the README banner in a light and a dark version, in .github/assets.
+// a phone and a shared link show, and the README banner, `useTimeZone()` set as a wordmark, in a light and a dark version, in .github/assets.
 // Usage: pnpm brand (needs sharp)
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
@@ -49,53 +49,16 @@ ${mark}
 // A phone and a shared link round the corners themselves.
 const tile = (size: number) => logo(size, 0)
 
-const font = 'ui-sans-serif, system-ui, -apple-system, \'Segoe UI\', Helvetica, Arial, sans-serif'
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
-// On the right, the API the way VueUse shows one: the call, and what it returns as a comment. The page and the server
-// route read the same zone.
-type Token = [text: string, role?: 'key' | 'fn' | 'str' | 'note']
-const code: Token[][] = [
-  [['// app/pages/index.vue', 'note']],
-  [['const ', 'key'], ['timeZone = '], ['useTimeZone', 'fn'], ['()']],
-  [['timeZone.value '], ['// \'Europe/Madrid\'', 'str']],
-  [],
-  [['// server/api/today.get.ts', 'note']],
-  [['getRequestTimeZone', 'fn'], ['(event)']],
-  [['// \'Europe/Madrid\'', 'str']],
-]
-const panel = (t: Theme) => {
-  const fill = { key: t.muted, fn: t.fg, str: t.lead, note: t.faint }
-  return code
-    .map((line, i) => line.length === 0
-      ? ''
-      : `<text x="848" y="${112 + i * 34}" xml:space="preserve">${line
-        .map(([text, role]) => `<tspan fill="${role ? fill[role] : t.muted}"${role === 'fn' ? ' font-weight="600"' : ''}>${text}</tspan>`)
-        .join('')}</text>`)
-    .filter(Boolean)
-    .join('\n')
-}
-
-// The mark and name on the left, a line and the config under them; the code on the right.
+// The banner is the API itself: the composable as a call, centred, and the package name under it.
 const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
-<title id="t">nuxt-time-zone: times in the visitor's time zone, from the first server render</title>
-<style>${style(t)}</style>
+<title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="${t.bg}"/>
-<rect x="800" y="0" width="480" height="400" fill="${t.panel}"/>
-<g font-family="${mono}" font-size="18">
-${panel(t)}
-</g>
-<g transform="translate(66 62) scale(.66)">
-${mark}
-</g>
-<text x="168" y="140" fill="${t.fg}" font-family="${font}" font-size="72" font-weight="700" letter-spacing="-2.5">nuxt-time-zone</text>
-<text x="80" y="204" fill="${t.muted}" font-family="${font}" font-size="27">Times in the visitor's time zone,</text>
-<text x="80" y="240" fill="${t.muted}" font-family="${font}" font-size="27">from the first server render.</text>
-<g font-family="${mono}" font-size="22">
-<text x="80" y="326" fill="${t.faint}">modules: [<tspan fill="${t.lead}">'nuxt-time-zone'</tspan>]</text>
-</g>
+<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.faint}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.faint}">nuxt-time-zone</text>
 </g>
 </svg>
 `

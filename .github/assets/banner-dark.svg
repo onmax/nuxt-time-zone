@@ -1,31 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
-<title id="t">nuxt-time-zone: times in the visitor's time zone, from the first server render</title>
-<style>.bg{fill:#0f1612}.rim,.hand{stroke:#f6f5f1}.grid{stroke:#89928d;opacity:.55}.lead{stroke:#3cde93}.pin{fill:#f6f5f1}</style>
+<title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="#0f1612"/>
-<rect x="800" y="0" width="480" height="400" fill="#171f1b"/>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">
-<text x="848" y="112" xml:space="preserve"><tspan fill="#89928d">// app/pages/index.vue</tspan></text>
-<text x="848" y="146" xml:space="preserve"><tspan fill="#b7c0bc">const </tspan><tspan fill="#b7c0bc">timeZone = </tspan><tspan fill="#f6f5f1" font-weight="600">useTimeZone</tspan><tspan fill="#b7c0bc">()</tspan></text>
-<text x="848" y="180" xml:space="preserve"><tspan fill="#b7c0bc">timeZone.value </tspan><tspan fill="#3cde93">// 'Europe/Madrid'</tspan></text>
-<text x="848" y="248" xml:space="preserve"><tspan fill="#89928d">// server/api/today.get.ts</tspan></text>
-<text x="848" y="282" xml:space="preserve"><tspan fill="#f6f5f1" font-weight="600">getRequestTimeZone</tspan><tspan fill="#b7c0bc">(event)</tspan></text>
-<text x="848" y="316" xml:space="preserve"><tspan fill="#3cde93">// 'Europe/Madrid'</tspan></text>
-</g>
-<g transform="translate(66 62) scale(.66)">
-<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
-<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
-<path class="grid" d="M20 64 H108" stroke-width="4"/>
-<path class="hand" d="M64 64 V34" stroke-width="7" stroke-linecap="round"/>
-<path class="lead" d="M64 64 L86 76" stroke-width="8" stroke-linecap="round"/>
-<circle class="pin" cx="64" cy="64" r="6"/>
-</g>
-<text x="168" y="140" fill="#f6f5f1" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="-2.5">nuxt-time-zone</text>
-<text x="80" y="204" fill="#b7c0bc" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27">Times in the visitor's time zone,</text>
-<text x="80" y="240" fill="#b7c0bc" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27">from the first server render.</text>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22">
-<text x="80" y="326" fill="#89928d">modules: [<tspan fill="#3cde93">'nuxt-time-zone'</tspan>]</text>
-</g>
+<text x="640" y="222" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="#89928d">use</tspan><tspan fill="#f6f5f1">TimeZone</tspan><tspan fill="#3cde93">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#89928d">nuxt-time-zone</text>
 </g>
 </svg>
