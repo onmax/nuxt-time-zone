@@ -40,7 +40,7 @@ const timeZone = useTimeZone() // Readonly<Ref<'Europe/Madrid'>>
 const timeZone = getRequestTimeZone(event) // 'Europe/Madrid'
 ```
 
-Both are auto-imported and return the same zone for the page load.
+Both are auto-imported. On a server-rendered page they return the same zone.
 
 `<NuxtTime>` needs no `time-zone` prop.
 
@@ -65,6 +65,7 @@ No reload on prerendered, `ssr: false` or POST pages, when cookies are blocked, 
 ## Caveats
 
 - **Cached HTML** serves one zone to everyone. Don't cache pages with dates, or vary the cache on `Cookie`.
+- **The API can disagree with the page.** `getRequestTimeZone` reads each request's cookie. On a prerendered or cached page, or after another tab changes the cookie, it can return another zone than `useTimeZone()`. When they must agree, send `useTimeZone().value` with the request.
 - **Safari** expires the cookie after 7 days, so the next visit reloads once.
 - **Strict CSP** must allow the inline head script, by hash or nonce.
 
