@@ -40,7 +40,7 @@ const timeZone = useTimeZone() // Readonly<Ref<string>>, e.g. 'Europe/Madrid'
 const timeZone = getRequestTimeZone(event) // 'Europe/Madrid'
 ```
 
-Both are auto-imported. On a server-rendered page they return the same zone.
+Both are auto-imported. They agree while the server renders a page. Later API calls read the cookie again, see [Caveats](#caveats).
 
 `<NuxtTime>` needs no `time-zone` prop.
 
