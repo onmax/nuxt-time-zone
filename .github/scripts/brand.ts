@@ -25,9 +25,9 @@ const dark = {
 type Theme = typeof light
 
 // The mark, in a 128 box. Strokes are classes, so an SVG favicon can switch them with prefers-color-scheme.
-const mark = `<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
-<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
+const mark = `<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
 <path class="grid" d="M20 64 H108" stroke-width="4"/>
+<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
 <path class="hand" d="M64 64 V34" stroke-width="7" stroke-linecap="round"/>
 <path class="lead" d="M64 64 L86 76" stroke-width="8" stroke-linecap="round"/>
 <circle class="pin" cx="64" cy="64" r="6"/>`
