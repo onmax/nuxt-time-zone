@@ -15,8 +15,13 @@ export default defineNuxtPlugin({
     // `ssr: false`: nothing was rendered, so use the device's zone and send it with every request from now on.
     if (!timeZone) {
       const device = parseTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
-      if (device)
-        document.cookie = timeZoneCookie(cookieName, device, location.protocol === 'https:')
+      try {
+        if (device)
+          document.cookie = timeZoneCookie(cookieName, device, location.protocol === 'https:')
+      }
+      catch {
+        // A sandboxed frame throws on cookie access. The app still runs in the device zone.
+      }
       timeZone = device ?? fallback
     }
 

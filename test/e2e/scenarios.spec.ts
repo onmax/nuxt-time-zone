@@ -284,3 +284,21 @@ test('16. a cookie lost in the same tab reloads once and recovers, every time', 
     expect(await cookie(context)).toBe(DEVICE)
   }
 })
+
+test('17. an `ssr: false` page still starts when writing the cookie throws', async ({ page }) => {
+  // What an opaque-origin sandboxed frame does.
+  await page.addInitScript(() => {
+    Object.defineProperty(Document.prototype, 'cookie', {
+      configurable: true,
+      get: () => {
+        throw new DOMException('The operation is insecure.', 'SecurityError')
+      },
+      set: () => {
+        throw new DOMException('The operation is insecure.', 'SecurityError')
+      },
+    })
+  })
+  const documents = await visit(page, '/spa')
+  expect(documents).toHaveLength(1)
+  await expectPageZone(page, DEVICE)
+})

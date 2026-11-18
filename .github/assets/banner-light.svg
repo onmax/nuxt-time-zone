@@ -1,35 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
-<title id="t">nuxt-time-zone: times in the visitor's time zone, from the first server render</title>
-<style>.bg{fill:#f6f5f1}.rim,.hand{stroke:#14201b}.grid{stroke:#56645e;opacity:.55}.lead{stroke:#126b47}.pin{fill:#14201b}</style>
+<title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
-<rect width="1280" height="400" fill="#f6f5f1"/>
-<rect x="800" y="0" width="480" height="400" fill="#e9e8e1"/>
-<text x="840" y="120" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#14201b">Madrid</text>
-<text x="840" y="144" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#56645e">Europe/Madrid</text>
-<text x="1200" y="130" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#126b47">14:30</text>
-<rect x="840" y="164" width="360" height="1" fill="#56645e" opacity=".25"/>
-<text x="840" y="212" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#14201b">New York</text>
-<text x="840" y="236" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#56645e">America/New_York</text>
-<text x="1200" y="222" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#14201b">08:30</text>
-<rect x="840" y="256" width="360" height="1" fill="#56645e" opacity=".25"/>
-<text x="840" y="304" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#14201b">Tokyo</text>
-<text x="840" y="328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#56645e">Asia/Tokyo</text>
-<text x="1200" y="314" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="40" font-weight="600" fill="#14201b">22:30</text>
-<rect x="840" y="348" width="360" height="1" fill="#56645e" opacity=".25"/>
-<g transform="translate(66 62) scale(.66)">
-<circle class="rim" cx="64" cy="64" r="44" fill="none" stroke-width="7"/>
-<ellipse class="grid" cx="64" cy="64" rx="18" ry="44" fill="none" stroke-width="4"/>
-<path class="grid" d="M20 64 H108" stroke-width="4"/>
-<path class="hand" d="M64 64 V34" stroke-width="7" stroke-linecap="round"/>
-<path class="lead" d="M64 64 L86 76" stroke-width="8" stroke-linecap="round"/>
-<circle class="pin" cx="64" cy="64" r="6"/>
-</g>
-<text x="168" y="140" fill="#14201b" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="-2.5">nuxt-time-zone</text>
-<text x="80" y="204" fill="#46534d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27">Times in the visitor's time zone,</text>
-<text x="80" y="240" fill="#46534d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27">from the first server render.</text>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22">
-<text x="80" y="326" fill="#56645e">modules: [<tspan fill="#126b47">'nuxt-time-zone'</tspan>]</text>
-</g>
+<rect width="1280" height="400" fill="#ffffff"/>
+<text x="640" y="222" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="#737373">use</tspan><tspan fill="#171717">TimeZone</tspan><tspan fill="#00c16a">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#737373">nuxt-time-zone</text>
 </g>
 </svg>

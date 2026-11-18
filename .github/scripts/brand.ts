@@ -1,28 +1,26 @@
 // Draws the brand from one mark, a globe with clock hands: a meridian and the equator on a round face, and the hands
 // over them, the hour hand in green. One instant, read in the visitor's zone. It makes the logo, the favicons, the icons
-// a phone and a shared link show, and the README banner in a light and a dark version, in .github/assets.
+// a phone and a shared link show, and the README banner, `useTimeZone()` set as a wordmark, in a light and a dark version, in .github/assets.
 // Usage: pnpm brand (needs sharp)
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import sharp from 'sharp'
 
-// Picked in oklch and written as hex, because librsvg, which renders the PNGs, doesn't read oklch().
-// Contrast is WCAG 2 against each theme's background, or the panel where noted.
+// Nuxt's design tokens (nuxt.com/design.md): true neutral surfaces and Nuxt green as the one accent, `green-500` in
+// light mode and `green-400` in dark. Text follows Nuxt UI: highlighted for the name, muted and dimmed around it.
 const light = {
-  bg: '#f6f5f1', // oklch(0.97 0.006 100)
-  panel: '#e9e8e1', // oklch(0.93 0.01 100)
-  fg: '#14201b', // oklch(0.23 0.02 165), 15.4:1
-  muted: '#46534d', // oklch(0.43 0.02 165), 7.4:1
-  faint: '#56645e', // oklch(0.49 0.02 165), 5.1:1 on the panel
-  lead: '#126b47', // oklch(0.47 0.1 160), 5.3:1 on the panel, Nuxt's green darkened to read on paper
+  bg: '#ffffff', // white
+  fg: '#171717', // neutral-900, text-highlighted
+  muted: '#737373', // neutral-500, text-muted
+  faint: '#a3a3a3', // neutral-400, text-dimmed
+  lead: '#00c16a', // green-500
 }
 const dark = {
-  bg: '#0f1612', // oklch(0.19 0.012 165)
-  panel: '#171f1b', // oklch(0.23 0.014 165)
-  fg: '#f6f5f1', // oklch(0.97 0.006 100), 16.8:1
-  muted: '#b7c0bc', // oklch(0.8 0.012 165), 9.9:1
-  faint: '#89928d', // oklch(0.65 0.012 165), 5.3:1 on the panel
-  lead: '#3cde93', // oklch(0.8 0.17 158), 9.7:1 on the panel, close to Nuxt's green
+  bg: '#0a0a0a', // neutral-950, Nuxt black
+  fg: '#ffffff', // white, text-highlighted
+  muted: '#a3a3a3', // neutral-400, text-muted
+  faint: '#737373', // neutral-500, text-dimmed
+  lead: '#00dc82', // green-400, Nuxt green
 }
 type Theme = typeof light
 
@@ -49,43 +47,16 @@ ${mark}
 // A phone and a shared link round the corners themselves.
 const tile = (size: number) => logo(size, 0)
 
-const font = 'ui-sans-serif, system-ui, -apple-system, \'Segoe UI\', Helvetica, Arial, sans-serif'
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
-// On the right, one instant in three zones: the same render, read where each visitor is.
-const zones = [
-  ['Madrid', 'Europe/Madrid', '14:30'],
-  ['New York', 'America/New_York', '08:30'],
-  ['Tokyo', 'Asia/Tokyo', '22:30'],
-]
-const clocks = (t: Theme) => zones
-  .map(([city, zone, time], r) => {
-    const y = 120 + r * 92
-    return `<text x="840" y="${y}" font-family="${font}" font-size="22" fill="${t.fg}">${city}</text>
-<text x="840" y="${y + 24}" font-family="${mono}" font-size="14" fill="${t.faint}">${zone}</text>
-<text x="1200" y="${y + 10}" text-anchor="end" font-family="${mono}" font-size="40" font-weight="600" fill="${r === 0 ? t.lead : t.fg}">${time}</text>
-<rect x="840" y="${y + 44}" width="360" height="1" fill="${t.faint}" opacity=".25"/>`
-  })
-  .join('\n')
-
-// The mark and name on the left, a line and the config under them; the clocks on the right.
+// The banner is the API itself: the composable as a call, centred, and the package name under it.
 const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
-<title id="t">nuxt-time-zone: times in the visitor's time zone, from the first server render</title>
-<style>${style(t)}</style>
+<title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
 <rect width="1280" height="400" fill="${t.bg}"/>
-<rect x="800" y="0" width="480" height="400" fill="${t.panel}"/>
-${clocks(t)}
-<g transform="translate(66 62) scale(.66)">
-${mark}
-</g>
-<text x="168" y="140" fill="${t.fg}" font-family="${font}" font-size="72" font-weight="700" letter-spacing="-2.5">nuxt-time-zone</text>
-<text x="80" y="204" fill="${t.muted}" font-family="${font}" font-size="27">Times in the visitor's time zone,</text>
-<text x="80" y="240" fill="${t.muted}" font-family="${font}" font-size="27">from the first server render.</text>
-<g font-family="${mono}" font-size="22">
-<text x="80" y="326" fill="${t.faint}">modules: [<tspan fill="${t.lead}">'nuxt-time-zone'</tspan>]</text>
-</g>
+<text x="640" y="222" text-anchor="middle" font-family="${mono}" font-size="104" font-weight="600" letter-spacing="-3"><tspan fill="${t.muted}">use</tspan><tspan fill="${t.fg}">TimeZone</tspan><tspan fill="${t.lead}">()</tspan></text>
+<text x="640" y="290" text-anchor="middle" font-family="${mono}" font-size="24" fill="${t.muted}">nuxt-time-zone</text>
 </g>
 </svg>
 `
