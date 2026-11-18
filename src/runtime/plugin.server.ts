@@ -20,9 +20,10 @@ export default defineNuxtPlugin({
     // The head script compares this with the device's zone and may reload. Reloading a POST would resend it, and
     // prerendered HTML is the same for everyone, so a reload can't change it.
     if (event.method === 'GET' && !import.meta.prerender) {
+      // doctor-disable-next-line nuxt/security/no-unsafe-usehead-script -- The first-party script must run inline and block parsing. Its source uses only the validated build-time cookie name, not request data.
       useHead({
         htmlAttrs: { 'data-time-zone': timeZone },
-        script: [{ key: 'nuxt-time-zone', innerHTML: script, tagPriority: 'critical' }],
+        script: [{ key: 'nuxt-time-zone', innerHTML: script, tagPriority: 41 }],
       })
     }
 
