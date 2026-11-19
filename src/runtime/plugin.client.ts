@@ -10,16 +10,16 @@ export default defineNuxtPlugin({
   enforce: 'pre',
   setup(nuxtApp): { provide: { timeZone: Readonly<Ref<string>> } } {
     // Hydrate with the zone the server rendered. The cookie may have changed since, so it is never read here.
-    let timeZone: string | undefined = nuxtApp.payload.serverRendered ? useState<string | undefined>(STATE_KEY).value : undefined
+    let timeZone: string | undefined = nuxtApp.payload.serverRendered
+      ? useState<string | undefined>(STATE_KEY).value
+      : undefined
 
     // `ssr: false`: nothing was rendered, so use the device's zone and send it with every request from now on.
     if (!timeZone) {
       const device = parseTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
       try {
-        if (device)
-          document.cookie = timeZoneCookie(cookieName, device, location.protocol === 'https:')
-      }
-      catch {
+        if (device) document.cookie = timeZoneCookie(cookieName, device, location.protocol === 'https:')
+      } catch {
         // A sandboxed frame throws on cookie access. The app still runs in the device zone.
       }
       timeZone = device ?? fallback

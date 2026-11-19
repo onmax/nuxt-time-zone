@@ -1,5 +1,5 @@
 name: setup-pnpm
-description: Enable corepack, set up Node.js with the pnpm cache, and install dependencies
+description: Enable corepack, set up Node.js with the pnpm cache, install dependencies and put their binaries, such as vp, on PATH
 
 inputs:
   install-command:
@@ -20,3 +20,6 @@ runs:
 
     - shell: bash
       run: ${{ inputs.install-command }}
+
+    - shell: bash
+      run: echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"

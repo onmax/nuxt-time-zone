@@ -1,12 +1,10 @@
 // The cookie is user input that reaches Intl, so a name Intl doesn't know reads as no zone.
-export function parseTimeZone(value: unknown): string | null {
-  if (typeof value !== 'string' || !value)
-    return null
+export function parseTimeZone(value: string | undefined): string | null {
+  if (!value) return null
   try {
     Intl.DateTimeFormat(undefined, { timeZone: value })
     return value
-  }
-  catch {
+  } catch {
     return null
   }
 }

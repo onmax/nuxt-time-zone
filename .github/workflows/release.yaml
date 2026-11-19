@@ -8,7 +8,7 @@ run-name: >-
 on:
   push:
     # release/v* picks up hand edits to an open release PR
-    branches: [main, "release/v*"]
+    branches: [main, 'release/v*']
   pull_request:
     types: [closed]
     branches: [main]
@@ -16,13 +16,13 @@ on:
   workflow_dispatch:
     inputs:
       prerelease:
-        description: "Cut a prerelease instead of a normal release, e.g. `beta`, `rc`, or `0`"
+        description: 'Cut a prerelease instead of a normal release, e.g. `beta`, `rc`, or `0`'
         required: false
-        default: ""
+        default: ''
       npm-tag:
-        description: "npm dist-tag to publish to. Set by uppt/release for maintenance lines; leave blank otherwise"
+        description: 'npm dist-tag to publish to. Set by uppt/release for maintenance lines; leave blank otherwise'
         required: false
-        default: ""
+        default: ''
 
 permissions: {}
 
@@ -111,11 +111,11 @@ jobs:
       - id: pack
         uses: danielroe/uppt/pack@6c1a9b480b0f02a3f535dedaf1a113f590aa56f2 # v0.6.12
         with:
-          checkout: "false"
-          install: "false"
+          checkout: 'false'
+          install: 'false'
         env:
           # Pack the verified build without running prepack again.
-          pnpm_config_ignore_scripts: "true"
+          pnpm_config_ignore_scripts: 'true'
 
       - name: Check release tarball count
         env:

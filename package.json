@@ -1,75 +1,73 @@
 {
   "name": "nuxt-time-zone",
-  "type": "module",
   "version": "0.0.1",
-  "packageManager": "pnpm@12.16.1",
   "description": "The visitor's time zone in Nuxt, on the server and the client",
+  "keywords": [
+    "hydration",
+    "nuxt",
+    "nuxt-module",
+    "ssr",
+    "time-zone",
+    "timezone"
+  ],
+  "homepage": "https://github.com/onmax/nuxt-time-zone#readme",
+  "bugs": "https://github.com/onmax/nuxt-time-zone/issues",
   "license": "MIT",
   "author": "onmax",
-  "homepage": "https://github.com/onmax/nuxt-time-zone#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onmax/nuxt-time-zone.git"
   },
-  "bugs": "https://github.com/onmax/nuxt-time-zone/issues",
-  "keywords": [
-    "nuxt",
-    "nuxt-module",
-    "time-zone",
-    "timezone",
-    "ssr",
-    "hydration"
+  "files": [
+    "dist"
   ],
+  "type": "module",
   "sideEffects": false,
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.mts",
   "exports": {
     ".": {
       "types": "./dist/types.d.mts",
       "import": "./dist/module.mjs"
     }
   },
-  "main": "./dist/module.mjs",
-  "types": "./dist/types.d.mts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "nuxt-module-build prepare && nuxt-module-build build",
     "prepack": "pnpm build",
     "dev": "nuxi dev playground --port 4320",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p playground",
+    "check": "vp check",
+    "check:fix": "vp check --fix",
+    "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p playground && vue-tsc --noEmit -p playground/server",
     "test:e2e": "playwright test",
     "test:e2e:dev": "E2E_DEV=1 playwright test",
-    "check:doctor": "vite-doctor . --max-warnings 0 --format text",
     "validate": "pnpm build && publint --strict",
     "build:playground": "nuxi build playground",
     "brand": "node --no-warnings .github/scripts/brand.ts"
-  },
-  "peerDependencies": {
-    "nuxt": ">=4.0.0"
   },
   "dependencies": {
     "@nuxt/kit": "catalog:prod",
     "h3": "catalog:prod"
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "catalog:lint",
     "@nuxt/module-builder": "catalog:build",
     "@playwright/test": "catalog:test",
     "@types/node": "catalog:build",
-    "eslint": "catalog:lint",
     "nuxt": "catalog:nuxt",
     "publint": "catalog:build",
     "sharp": "catalog:brand",
     "typescript": "catalog:build",
     "vite-doctor": "catalog:lint",
+    "vite-plus": "catalog:lint",
     "vue": "catalog:nuxt",
     "vue-router": "catalog:nuxt",
     "vue-tsc": "catalog:build"
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "peerDependencies": {
+    "nuxt": ">=4.0.0"
+  },
+  "packageManager": "pnpm@12.16.1"
 }

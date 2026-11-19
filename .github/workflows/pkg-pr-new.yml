@@ -6,7 +6,7 @@ on:
     branches:
       - main
       # Release PRs created with GITHUB_TOKEN may not trigger pull_request workflows.
-      - "release/v*"
+      - 'release/v*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
@@ -32,4 +32,4 @@ jobs:
       - run: pnpm dlx pkg-pr-new publish --pnpm --packageManager=pnpm
         env:
           # The build above already ran prepack.
-          pnpm_config_ignore_scripts: "true"
+          pnpm_config_ignore_scripts: 'true'

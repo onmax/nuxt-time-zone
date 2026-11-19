@@ -1,4 +1,12 @@
-import { addImports, addPlugin, addServerImports, addTemplate, addTypeTemplate, createResolver, defineNuxtModule } from '@nuxt/kit'
+import {
+  addImports,
+  addPlugin,
+  addServerImports,
+  addTemplate,
+  addTypeTemplate,
+  createResolver,
+  defineNuxtModule,
+} from '@nuxt/kit'
 import { parseTimeZone } from './runtime/shared/time-zone'
 
 export interface ModuleOptions {
@@ -29,9 +37,13 @@ export default defineNuxtModule<ModuleOptions>({
   },
   setup(options, nuxt) {
     if (!COOKIE_NAME.test(options.cookieName))
-      throw new Error(`[nuxt-time-zone] \`timeZone.cookieName\` must be a valid cookie name, got ${JSON.stringify(options.cookieName)}.`)
+      throw new Error(
+        `[nuxt-time-zone] \`timeZone.cookieName\` must be a valid cookie name, got ${JSON.stringify(options.cookieName)}.`,
+      )
     if (!parseTimeZone(options.fallback))
-      throw new Error(`[nuxt-time-zone] \`timeZone.fallback\` must be an IANA time zone that Intl knows, like 'UTC' or 'Europe/Madrid', got ${JSON.stringify(options.fallback)}.`)
+      throw new Error(
+        `[nuxt-time-zone] \`timeZone.fallback\` must be an IANA time zone that Intl knows, like 'UTC' or 'Europe/Madrid', got ${JSON.stringify(options.fallback)}.`,
+      )
 
     const resolver = createResolver(import.meta.url)
 
@@ -40,24 +52,29 @@ export default defineNuxtModule<ModuleOptions>({
     const template = addTemplate({
       filename: 'nuxt-time-zone/options.mjs',
       write: true,
-      getContents: () => [
-        `export const cookieName = ${JSON.stringify(options.cookieName)}`,
-        `export const fallback = ${JSON.stringify(options.fallback)}`,
-        '',
-      ].join('\n'),
+      getContents: () =>
+        [
+          `export const cookieName = ${JSON.stringify(options.cookieName)}`,
+          `export const fallback = ${JSON.stringify(options.fallback)}`,
+          '',
+        ].join('\n'),
     })
     // Nuxt passes its aliases on to Nitro.
     nuxt.options.alias['#nuxt-time-zone/options'] = template.dst
-    addTypeTemplate({
-      filename: 'types/nuxt-time-zone.d.ts',
-      getContents: () => [
-        'declare module \'#nuxt-time-zone/options\' {',
-        '  export const cookieName: string',
-        '  export const fallback: string',
-        '}',
-        '',
-      ].join('\n'),
-    }, { nuxt: true, nitro: true })
+    addTypeTemplate(
+      {
+        filename: 'types/nuxt-time-zone.d.ts',
+        getContents: () =>
+          [
+            "declare module '#nuxt-time-zone/options' {",
+            '  export const cookieName: string',
+            '  export const fallback: string',
+            '}',
+            '',
+          ].join('\n'),
+      },
+      { nuxt: true, nitro: true },
+    )
 
     addPlugin(resolver.resolve('./runtime/plugin.server'))
     addPlugin(resolver.resolve('./runtime/plugin.client'))
