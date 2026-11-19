@@ -280,15 +280,17 @@ test('14. <NuxtTime> without `time-zone` shows the device zone, even when the pa
   await expect(page.getByTestId('nuxt-time')).toHaveText('14:00')
 })
 
-test('15. setup rejects a fallback Intl does not know', async ({ browserName }) => {
+test('15. setup rejects non-string and unknown fallback zones', async ({ browserName }) => {
   test.skip(browserName !== 'chromium', 'runs Nuxt, not a browser')
-  const fixture = fileURLToPath(new URL('../fixtures/invalid-fallback', import.meta.url))
-  const result = spawnSync('pnpm', ['exec', 'nuxi', 'prepare', fixture], { encoding: 'utf8' })
-  rmSync(new URL('../fixtures/invalid-fallback/.nuxt', import.meta.url), { recursive: true, force: true })
-  expect(result.status).not.toBe(0)
-  expect(stripVTControlCharacters(result.stdout + result.stderr)).toMatch(
-    /`?timeZone\.fallback`? must be an IANA time zone/,
-  )
+  for (const name of ['invalid-fallback', 'non-string-fallback']) {
+    const fixture = fileURLToPath(new URL(`../fixtures/${name}`, import.meta.url))
+    const result = spawnSync('pnpm', ['exec', 'nuxi', 'prepare', fixture], { encoding: 'utf8' })
+    rmSync(new URL(`../fixtures/${name}/.nuxt`, import.meta.url), { recursive: true, force: true })
+    expect(result.status, name).not.toBe(0)
+    expect(stripVTControlCharacters(result.stdout + result.stderr), name).toMatch(
+      /`?timeZone\.fallback`? must be an IANA time zone/,
+    )
+  }
 })
 
 test('16. a cookie lost in the same tab reloads once and recovers, every time', async ({ page, context }) => {
