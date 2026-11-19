@@ -36,6 +36,7 @@ const timeZone = useTimeZone() // Readonly<Ref<string>>, e.g. 'Europe/Madrid'
 
 // server
 const timeZone = getRequestTimeZone(event) // 'Europe/Madrid'
+const timeZone = getRequestTimeZone(event, body.timeZone) // the zone the page sent, when it is valid
 ```
 
 Both are auto-imported. They agree while the server renders a page. Later API calls read the cookie again, see [Caveats](#caveats).
@@ -61,13 +62,13 @@ No reload on prerendered, `ssr: false` or POST pages, when cookies are blocked, 
 ## Caveats
 
 - **Cached HTML** serves one zone to everyone. Don't cache pages with dates, or vary the cache on `Cookie`.
-- **The API can disagree with the page.** `getRequestTimeZone` reads each request's cookie. On a prerendered or cached page, when the cookie is blocked, or after another tab changes it, it can return another zone than `useTimeZone()`. When they must agree, send `useTimeZone().value` with the request.
+- **The API can disagree with the page.** `getRequestTimeZone` reads each request's cookie. On a prerendered or cached page, when the cookie is blocked, or after another tab changes it, it can return another zone than `useTimeZone()`. When they must agree, send `useTimeZone().value` with the request and read it with `getRequestTimeZone(event, body.timeZone)`. An invalid zone falls back to the cookie.
 - **Safari** expires the cookie after 7 days, so the next visit reloads once.
 - **Strict CSP** must allow the inline head script, by hash or nonce.
 
 ## Tests
 
-17 scenarios in [SPEC.md](./SPEC.md), each a Playwright test in Chromium and WebKit.
+18 scenarios in [SPEC.md](./SPEC.md), each a Playwright test in Chromium and WebKit.
 
 ## Credit
 

@@ -38,6 +38,7 @@ Each numbered scenario is one Playwright test in `test/e2e/scenarios.spec.ts`, r
 15. **Invalid fallback.** Module setup throws unless `fallback` is a string naming a zone Intl knows.
 16. **Cookie lost in the same tab.** After a reload has fixed the zone, the cookie disappears (cleared, or Safari's 7-day cap in a tab left open). The next load reloads once and the cookie is back, however many times it happens in one tab.
 17. **`ssr: false` where cookies throw.** In a sandboxed frame, `document.cookie` throws. The app still starts, in the device zone.
+18. **Zone sent with a request.** `getRequestTimeZone(event, zone)` returns `zone` when Intl knows it, so a page can send `useTimeZone().value` and the API agrees with it. A missing or unknown `zone` falls back to the cookie, then `fallback`.
 
 ## Shape
 
@@ -46,13 +47,13 @@ Each numbered scenario is one Playwright test in `test/e2e/scenarios.spec.ts`, r
 timeZone: { cookieName?: string /* 'tz' */, fallback?: string /* 'UTC' */ }
 
 useTimeZone(): Readonly<Ref<string>> // app, auto-imported
-getRequestTimeZone(event: H3Event): string // Nitro, auto-imported
+getRequestTimeZone(event: H3Event, timeZone?: unknown): string // Nitro, auto-imported
 ```
 
 - **Head script** (`src/runtime/head-script.ts`). A blocking inline script, added by the server plugin with `useHead` alongside `data-time-zone` only on non-prerendered SSR GETs. Its priority puts it after document metadata such as CSP and before blocking inline `app.head` scripts marked `critical`, so it runs before the body is parsed and before anything paints. It is the only writer of the cookie on server-rendered pages. It reads the device zone from `Intl.DateTimeFormat().resolvedOptions().timeZone` and compares it with `<html data-time-zone>`, the zone the server rendered with, never with the live cookie. When they differ it writes the cookie (`Path=/; Max-Age=31536000; SameSite=Lax`, `Secure` on https), checks it reads back, calls `window.stop()` (before `location.reload()`, the reverse order cancels the reload) so the old body never paints, and reloads. It does nothing when `data-time-zone` is missing, the device zone is missing or unknown to Intl, `navigator.cookieEnabled` is false, the cookie doesn't read back, sessionStorage throws, this tab already reloaded for the same rendered and device zones and the cookie already holds the device zone (the server ignored it, as cached HTML does), or this tab reloaded 3 times in a row without reaching the device zone (a page rendered in the device zone resets that count).
 - **Server plugin.** The zone is the cookie when Intl knows it, else `fallback`. It goes into the payload (`useState`) on every server render, including POST and prerendered pages, so hydration uses the zone the server rendered with. `<html data-time-zone>` and the head script are added only on non-prerendered SSR GETs. The script uses priority `41`, just ahead of Unhead's `critical` blocking-script weight (`42`).
 - **Client plugin.** The zone is the one in the payload. It never reads the cookie. Without a server render (`ssr: false`) it uses the device zone and writes the cookie, and a write that throws doesn't stop the app.
-- **`getRequestTimeZone(event)`.** The cookie when Intl knows it, else `fallback`. On a server-rendered page that is the page's zone. A prerendered or cached page can show the fallback or a cached zone while the cookie holds the device's, so such a page should send `useTimeZone().value` with its requests.
+- **`getRequestTimeZone(event, timeZone?)`.** `timeZone` when Intl knows it, else the cookie when Intl knows it, else `fallback`. `timeZone` is untrusted request input, so any value is accepted and checked. On a server-rendered page that is the page's zone. A prerendered or cached page can show the fallback or a cached zone while the cookie holds the device's, so such a page should send `useTimeZone().value` with its requests and pass it as `timeZone`.
 - `cookieName` and `fallback` are build-time constants in a template (`#nuxt-time-zone/options`), not runtime config, because the head script inlines the cookie name. The zone is checked with Intl, not Temporal.
 
 ## Out of scope
