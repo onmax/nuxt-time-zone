@@ -323,3 +323,20 @@ test('17. an `ssr: false` page still starts when writing the cookie throws', asy
   expect(documents).toHaveLength(1)
   await expectPageZone(page, DEVICE)
 })
+
+test('18. a zone sent with the request wins over the cookie when Intl knows it', async ({ page, context }) => {
+  await visit(page, '/')
+  expect(await cookie(context)).toBe(DEVICE)
+  const zoneFor = (query: string) =>
+    page.evaluate(
+      (q) =>
+        fetch(`/api/time-zone${q}`)
+          .then((r) => r.json())
+          .then((body: { timeZone: string }) => body.timeZone),
+      query,
+    )
+  expect(await zoneFor('?timeZone=Asia%2FTokyo')).toBe('Asia/Tokyo')
+  expect(await zoneFor('?timeZone=Not%2FA_Zone')).toBe(DEVICE)
+  expect(await zoneFor('?timeZone=')).toBe(DEVICE)
+  expect(await zoneFor('')).toBe(DEVICE)
+})
