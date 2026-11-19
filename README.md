@@ -79,6 +79,7 @@ Based on Daniel Roe's [`<NuxtTime>`](https://github.com/nuxt/nuxt/blob/main/pack
 pnpm install
 pnpm dev:prepare
 pnpm dev
+pnpm check && pnpm typecheck && pnpm exec vp run check:doctor
 pnpm build:playground && pnpm test:e2e
 ```
 

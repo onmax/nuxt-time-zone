@@ -22,8 +22,7 @@ async function trackDocuments(page: Page) {
   const documents: RenderedDocument[] = []
   await page.route('**/*', async (route) => {
     const request = route.request()
-    if (!request.isNavigationRequest() || request.frame() !== page.mainFrame())
-      return route.fallback()
+    if (!request.isNavigationRequest() || request.frame() !== page.mainFrame()) return route.fallback()
     const response = await route.fetch()
     documents.push({ method: request.method(), html: await response.text() })
     await route.fulfill({ response })
@@ -47,12 +46,16 @@ async function visit(page: Page, path: string) {
 }
 
 async function cookie(context: BrowserContext) {
-  const value = (await context.cookies()).find(c => c.name === 'tz')?.value
+  const value = (await context.cookies()).find((c) => c.name === 'tz')?.value
   return value === undefined ? undefined : decodeURIComponent(value)
 }
 
 async function apiZone(page: Page) {
-  return page.evaluate(() => fetch('/api/time-zone').then(r => r.json()).then(r => r.timeZone as string))
+  return page.evaluate(() =>
+    fetch('/api/time-zone')
+      .then((r) => r.json())
+      .then((body: { timeZone: string }) => body.timeZone),
+  )
 }
 
 async function expectPageZone(page: Page, zone: string) {
@@ -85,7 +88,7 @@ function logDocuments(page: Page) {
     log.push(entry)
     const save = () => sessionStorage.setItem('test:documents', JSON.stringify(log))
     const paints = () => {
-      entry.paints = performance.getEntriesByType('paint').map(paint => paint.name)
+      entry.paints = performance.getEntriesByType('paint').map((paint) => paint.name)
       save()
     }
     save()
@@ -147,7 +150,11 @@ test.describe('3. device in the fallback zone', () => {
   })
 })
 
-test('4. an invalid cookie renders the fallback, then reloads once with the device zone', async ({ page, context, baseURL }) => {
+test('4. an invalid cookie renders the fallback, then reloads once with the device zone', async ({
+  page,
+  context,
+  baseURL,
+}) => {
   await context.addCookies([{ name: 'tz', value: 'Mars%2FOlympus_Mons', url: baseURL! }])
   const documents = await visit(page, '/')
   expect(documents).toHaveLength(2)
@@ -215,7 +222,7 @@ test('10. a page rendered for a POST does not reload', async ({ page }) => {
   await page.getByTestId('post').click()
   await page.waitForURL('**/posted', { waitUntil: 'commit' })
   await settled(page)
-  expect(documents.map(d => d.method)).toEqual(['POST'])
+  expect(documents.map((d) => d.method)).toEqual(['POST'])
   expect(documents[0]!.html).not.toContain('data-time-zone=')
   expect(documents[0]!.html).not.toContain('<script data-hid="nuxt-time-zone">')
   await expectPageZone(page, FALLBACK)
@@ -252,10 +259,9 @@ test('12. the zone stays fixed for the page load', async ({ page, context, baseU
 test('13. zone-dependent text and classes hydrate without mismatches', { tag: '@dev' }, async ({ page }) => {
   const warnings: string[] = []
   page.on('console', (message) => {
-    if (/hydrat|mismatch/i.test(message.text()))
-      warnings.push(`${message.type()}: ${message.text()}`)
+    if (/hydrat|mismatch/i.test(message.text())) warnings.push(`${message.type()}: ${message.text()}`)
   })
-  page.on('pageerror', error => warnings.push(`pageerror: ${error.message}`))
+  page.on('pageerror', (error) => warnings.push(`pageerror: ${error.message}`))
 
   await visit(page, '/')
   await expectPageZone(page, DEVICE)
@@ -266,19 +272,25 @@ test('13. zone-dependent text and classes hydrate without mismatches', { tag: '@
   expect(warnings).toEqual([])
 })
 
-test('14. <NuxtTime> without `time-zone` shows the device zone, even when the page rendered in another', async ({ page }) => {
+test('14. <NuxtTime> without `time-zone` shows the device zone, even when the page rendered in another', async ({
+  page,
+}) => {
   await visit(page, '/prerendered')
   await expectPageZone(page, FALLBACK)
   await expect(page.getByTestId('nuxt-time')).toHaveText('14:00')
 })
 
-test('15. setup rejects a fallback Intl does not know', async ({ browserName }) => {
+test('15. setup rejects non-string and unknown fallback zones', async ({ browserName }) => {
   test.skip(browserName !== 'chromium', 'runs Nuxt, not a browser')
-  const fixture = fileURLToPath(new URL('../fixtures/invalid-fallback', import.meta.url))
-  const result = spawnSync('pnpm', ['exec', 'nuxi', 'prepare', fixture], { encoding: 'utf8' })
-  rmSync(new URL('../fixtures/invalid-fallback/.nuxt', import.meta.url), { recursive: true, force: true })
-  expect(result.status).not.toBe(0)
-  expect(stripVTControlCharacters(result.stdout + result.stderr)).toMatch(/`?timeZone\.fallback`? must be an IANA time zone/)
+  for (const name of ['invalid-fallback', 'non-string-fallback']) {
+    const fixture = fileURLToPath(new URL(`../fixtures/${name}`, import.meta.url))
+    const result = spawnSync('pnpm', ['exec', 'nuxi', 'prepare', fixture], { encoding: 'utf8' })
+    rmSync(new URL(`../fixtures/${name}/.nuxt`, import.meta.url), { recursive: true, force: true })
+    expect(result.status, name).not.toBe(0)
+    expect(stripVTControlCharacters(result.stdout + result.stderr), name).toMatch(
+      /`?timeZone\.fallback`? must be an IANA time zone/,
+    )
+  }
 })
 
 test('16. a cookie lost in the same tab reloads once and recovers, every time', async ({ page, context }) => {

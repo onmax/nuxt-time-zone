@@ -35,7 +35,7 @@ Each numbered scenario is one Playwright test in `test/e2e/scenarios.spec.ts`, r
 12. **Fixed for the page load.** A cookie changed while the page is open (another tab) doesn't change `useTimeZone()`, also across client-side navigation. The next load renders the new cookie and reloads once if the device disagrees.
 13. **Hydration.** Text and a class that depend on the zone hydrate without mismatch warnings, in production and in `nuxi dev`, on pages rendered in the device zone, prerendered and stale.
 14. **`<NuxtTime>`.** Without `time-zone` it shows the device zone, even on a page rendered in the fallback.
-15. **Invalid fallback.** Module setup throws when Intl doesn't know `fallback`.
+15. **Invalid fallback.** Module setup throws unless `fallback` is a string naming a zone Intl knows.
 16. **Cookie lost in the same tab.** After a reload has fixed the zone, the cookie disappears (cleared, or Safari's 7-day cap in a tab left open). The next load reloads once and the cookie is back, however many times it happens in one tab.
 17. **`ssr: false` where cookies throw.** In a sandboxed frame, `document.cookie` throws. The app still starts, in the device zone.
 

@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   app: {
     head: {
-      meta: [{ 'http-equiv': 'content-security-policy', 'content': 'base-uri \'self\'' }],
+      meta: [{ 'http-equiv': 'content-security-policy', content: "base-uri 'self'" }],
       script: [{ key: 'host-critical', innerHTML: '/* Host inline script */', tagPriority: 'critical' }],
     },
   },

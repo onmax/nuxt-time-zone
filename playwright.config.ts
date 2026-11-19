@@ -20,6 +20,16 @@ export default defineConfig({
         { name: 'webkit', use: devices['Desktop Safari'] },
       ],
   webServer: dev
-    ? { command: 'nuxi dev playground --host 127.0.0.1 --port 4321', url: baseURL, timeout: 180_000, reuseExistingServer: false }
-    : { command: 'node playground/.output/server/index.mjs', url: baseURL, env: { HOST: '127.0.0.1', PORT: '4320' }, reuseExistingServer: false },
+    ? {
+        command: 'nuxi dev playground --host 127.0.0.1 --port 4321',
+        url: baseURL,
+        timeout: 180_000,
+        reuseExistingServer: false,
+      }
+    : {
+        command: 'node playground/.output/server/index.mjs',
+        url: baseURL,
+        env: { HOST: '127.0.0.1', PORT: '4320' },
+        reuseExistingServer: false,
+      },
 })

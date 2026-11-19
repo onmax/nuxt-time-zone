@@ -29,11 +29,13 @@ jobs:
           persist-credentials: false
           ref: ${{ inputs.ref || github.sha }}
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm lint
       # Generates .nuxt types for the module and the playground
       - run: pnpm dev:prepare
+      # Format, lint and type-aware lint (Oxfmt, Oxlint); the lint reads the .nuxt tsconfigs
+      - run: vp check
       - run: pnpm typecheck
-      - run: pnpm check:doctor
+      # Strict Vite Doctor, defined as a task in vite.config.ts
+      - run: vp run check:doctor
       # Builds dist and checks the packed package with publint
       - run: pnpm validate
       # The release publishes this verified build.

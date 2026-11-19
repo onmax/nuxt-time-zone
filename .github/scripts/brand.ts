@@ -50,7 +50,9 @@ const tile = (size: number) => logo(size, 0)
 const mono = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
 
 // The banner is the API itself: the mark on top, the composable as a call, centred, and the package name under it.
-const banner = (t: Theme) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
+const banner = (
+  t: Theme,
+) => `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t">
 <title id="t">nuxt-time-zone: useTimeZone()</title>
 <clipPath id="frame"><rect width="1280" height="400" rx="24"/></clipPath>
 <g clip-path="url(#frame)">
@@ -95,11 +97,14 @@ write('.github/assets/favicon.svg', logo(32))
 write('.github/assets/favicon-32.png', await png(logo(32), 32))
 write(
   '.github/assets/favicon.ico',
-  ico(await Promise.all([16, 32, 48].map(async size => [size, await png(logo(size), size)] as [number, Buffer]))),
+  ico(await Promise.all([16, 32, 48].map(async (size) => [size, await png(logo(size), size)] as [number, Buffer]))),
 )
 write('.github/assets/apple-touch-icon.png', await png(tile(180), 180))
 write('.github/assets/logo-512.png', await png(tile(512), 512))
-for (const [name, theme] of [['light', light], ['dark', dark]] as const) {
+for (const [name, theme] of [
+  ['light', light],
+  ['dark', dark],
+] as const) {
   const svg = banner(theme)
   write(`.github/assets/banner-${name}.svg`, svg)
   write(`.github/assets/banner-${name}.png`, await sharp(Buffer.from(svg), { density: 144 }).png().toBuffer())
