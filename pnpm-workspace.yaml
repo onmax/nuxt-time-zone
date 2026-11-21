@@ -36,5 +36,3 @@ catalogs:
     h3: ^1.15.11
   test:
     '@playwright/test': ^1.64.1
-minimumReleaseAgeExclude:
-  - vite-doctor@0.1.4
