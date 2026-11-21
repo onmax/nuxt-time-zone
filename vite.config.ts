@@ -15,10 +15,7 @@ export default defineConfig({
   run: {
     tasks: {
       'check:doctor': {
-        // Every activated pack's strict preset. Replace the --extends list with `--strict` once vite-doctor ships it
-        // (onmax/vite-doctor#352).
-        command:
-          'vite-doctor . --max-warnings 0 --format text --extends auto,vite-doctor/typescript/strict,vite-doctor/vue/strict,vite-doctor/nuxt/strict,vite-doctor/nitro/strict,vite-doctor/vite/strict',
+        command: 'vite-doctor . --strict --max-warnings 0 --format text',
         dependsOn: ['dev:prepare'],
         cache: false,
       },

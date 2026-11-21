@@ -3,7 +3,7 @@ trustPolicyExclude:
   # newer semver majors carry provenance, 6.x never did; @babel/core (via nuxt) depends on it
   - semver@6.3.1
   # 0.1.1+ carry GitHub Actions provenance but no trusted-publisher record, which 0.1.0 had
-  - vite-doctor@0.1.3
+  - vite-doctor@0.1.4
   # same for the TypeScript 7 port that vite-plus pins for type-aware lint
   - tsrs@7.1.0-beta.tsrs2
 
@@ -25,7 +25,7 @@ catalogs:
     typescript: ^6.0.3
     vue-tsc: ^3.3.14
   lint:
-    vite-doctor: ^0.1.3
+    vite-doctor: ^0.1.4
     vite-plus: ^1.7.0
   nuxt:
     nuxt: ^4.6.3
