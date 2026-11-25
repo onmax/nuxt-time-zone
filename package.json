@@ -49,8 +49,7 @@
     "brand": "node --no-warnings .github/scripts/brand.ts"
   },
   "dependencies": {
-    "@nuxt/kit": "catalog:prod",
-    "h3": "catalog:prod"
+    "@nuxt/kit": "catalog:prod"
   },
   "devDependencies": {
     "@nuxt/module-builder": "catalog:build",
@@ -67,7 +66,7 @@
     "vue-tsc": "catalog:build"
   },
   "peerDependencies": {
-    "nuxt": ">=4.0.0"
+    "nuxt": ">=4.6.0"
   },
   "packageManager": "pnpm@12.16.1"
 }
