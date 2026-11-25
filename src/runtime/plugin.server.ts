@@ -17,7 +17,7 @@ export default defineNuxtPlugin({
     useState(STATE_KEY, () => timeZone)
 
     const event = useRequestEvent()
-    const method = typeof event?.req?.method === 'string' ? event.req.method : event?.method
+    const method = event?.method ?? event?.req?.method
     // The head script compares this with the device's zone and may reload. Reloading a POST would resend it, and
     // prerendered HTML is the same for everyone, so a reload can't change it.
     if (method === 'GET' && !import.meta.prerender) {

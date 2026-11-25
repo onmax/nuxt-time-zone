@@ -13,39 +13,37 @@ void describe('cookieValue', () => {
   })
 })
 
-void describe('getRequestTimeZone on a Nitro v2-shaped event', () => {
-  void it('reads the live Node cookie after event.headers was cached from an earlier value', () => {
-    const nodeHeaders: Record<string, string | string[] | undefined> = {
-      cookie: 'tz=Europe%2FMadrid',
-    }
-    const initial = nodeHeaders.cookie
-    let cached: string | null = typeof initial === 'string' ? initial : null
+void describe('getRequestTimeZone', () => {
+  void it('reads the live Node cookie on a Nitro v2 nuxt/server event whose Web headers are a snapshot', () => {
+    const nodeHeaders: { cookie?: string } = { cookie: 'tz=Europe%2FMadrid' }
     const event = {
-      req: { headers: nodeHeaders },
-      // h3 v1 caches the first Headers read; later Node rewrites do not update it.
-      headers: {
-        get(name: string) {
-          return name.toLowerCase() === 'cookie' ? cached : null
-        },
-      },
+      __is_event__: true,
+      node: { req: { headers: nodeHeaders } },
+      req: { headers: new Headers({ cookie: 'tz=Europe%2FMadrid' }) },
     }
 
     assert.equal(getRequestTimeZone(event), 'Europe/Madrid')
-    void event.headers.get('cookie')
     delete nodeHeaders.cookie
-    // Stale Web Headers still hold the pre-delete value; the Node record must win.
-    assert.equal(cached, 'tz=Europe%2FMadrid')
     assert.equal(getRequestTimeZone(event), 'UTC')
   })
 
-  void it('still reads Web Headers when no request header collection exists', () => {
-    const event = {
-      headers: {
-        get(name: string) {
-          return name.toLowerCase() === 'cookie' ? 'tz=America%2FNew_York' : null
-        },
-      },
+  void it('reads Web Headers on a Nitro v3 h3 event, whose node getter may be undefined or stale', () => {
+    class H3Event {
+      static __is_event__ = true
+      req = { headers: new Headers({ cookie: 'tz=America%2FNew_York' }) }
+      readonly runtimeNode?: { req: { headers: { cookie?: string } } }
+      constructor(runtimeNode?: { req: { headers: { cookie?: string } } }) {
+        this.runtimeNode = runtimeNode
+      }
+      get node() {
+        return this.runtimeNode
+      }
     }
-    assert.equal(getRequestTimeZone(event), 'America/New_York')
+
+    assert.equal(getRequestTimeZone(new H3Event()), 'America/New_York')
+    assert.equal(
+      getRequestTimeZone(new H3Event({ req: { headers: { cookie: 'tz=Europe%2FMadrid' } } })),
+      'America/New_York',
+    )
   })
 })
