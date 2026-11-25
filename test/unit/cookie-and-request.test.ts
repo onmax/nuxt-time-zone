@@ -27,6 +27,14 @@ void describe('getRequestTimeZone', () => {
     assert.equal(getRequestTimeZone(event), 'UTC')
   })
 
+  void it('reads a Nitro v2 cookie header sent as several values', () => {
+    const event = {
+      __is_event__: true,
+      node: { req: { headers: { cookie: ['other=example', 'tz=Europe%2FMadrid'] } } },
+    }
+    assert.equal(getRequestTimeZone(event), 'Europe/Madrid')
+  })
+
   void it('reads Web Headers on a Nitro v3 h3 event, whose node getter may be undefined or stale', () => {
     class H3Event {
       static __is_event__ = true

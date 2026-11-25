@@ -4,12 +4,15 @@ import { parseTimeZone } from '../../shared/time-zone'
 
 /** A Nitro v2 h3 event (raw or `nuxt/server`'s), or a Nitro v3 `nuxt/server` `RequestEvent`. */
 export type TimeZoneRequestEvent =
-  | { __is_event__: boolean; node: { req: { headers: { cookie?: string } } } }
+  | { __is_event__: boolean; node: { req: { headers: { cookie?: string | string[] } } } }
   | { req: { headers: { get(name: string): string | null } } }
 
 function cookieHeader(event: TimeZoneRequestEvent): string | undefined {
   // Only h3 v1 sets `__is_event__` per instance; its live Node headers can differ from `event.req.headers`.
-  if ('__is_event__' in event) return event.node.req.headers.cookie
+  if ('__is_event__' in event) {
+    const cookie = event.node.req.headers.cookie
+    return Array.isArray(cookie) ? cookie.join('; ') : cookie
+  }
   return event.req.headers.get('cookie') ?? undefined
 }
 
