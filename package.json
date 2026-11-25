@@ -1,6 +1,6 @@
 {
   "name": "nuxt-time-zone",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "The visitor's time zone in Nuxt, on the server and the client",
   "keywords": [
     "hydration",
