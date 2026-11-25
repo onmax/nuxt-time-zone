@@ -13,7 +13,9 @@ export function cookieValue(header: string | undefined, name: string): string | 
     const cookie = part.trim()
     if (!cookie.startsWith(prefix)) continue
 
-    const value = cookie.slice(prefix.length)
+    let value = cookie.slice(prefix.length)
+    // RFC 6265 cookie-value may be a quoted-string; h3 stripped the quotes, so keep that behavior.
+    if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
     try {
       return decodeURIComponent(value)
     } catch {

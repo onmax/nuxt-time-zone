@@ -29,7 +29,7 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-time-zone',
     configKey: 'timeZone',
-    compatibility: { nuxt: '>=4.6.0' },
+    compatibility: { nuxt: '>=4.0.0' },
   },
   defaults: {
     cookieName: 'tz',
