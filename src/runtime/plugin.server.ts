@@ -1,10 +1,10 @@
-import { defineNuxtPlugin, useHead, useRequestEvent, useState } from '#app'
-import { cookieName } from '#nuxt-time-zone/options'
+import { defineNuxtPlugin, useHead, useRequestEvent, useRequestHeaders, useState } from '#app'
+import { cookieName, fallback } from '#nuxt-time-zone/options'
 import type { Ref } from 'vue'
 import { readonly, shallowRef } from 'vue'
 import { headScript } from './head-script'
-import { getRequestTimeZone } from './server/utils/time-zone'
-import { STATE_KEY } from './shared/time-zone'
+import { cookieValue } from './shared/cookie'
+import { parseTimeZone, STATE_KEY } from './shared/time-zone'
 
 const script = headScript(cookieName)
 
@@ -12,14 +12,15 @@ export default defineNuxtPlugin({
   name: 'nuxt-time-zone',
   enforce: 'pre',
   setup(): { provide: { timeZone: Readonly<Ref<string>> } } {
-    const event = useRequestEvent()!
-    const timeZone = getRequestTimeZone(event)
+    const timeZone = parseTimeZone(cookieValue(useRequestHeaders(['cookie']).cookie, cookieName)) ?? fallback
     // The payload carries the zone this page was rendered with, so hydration uses the same one.
     useState(STATE_KEY, () => timeZone)
 
+    const event = useRequestEvent()
+    const method = event?.method ?? event?.req?.method
     // The head script compares this with the device's zone and may reload. Reloading a POST would resend it, and
     // prerendered HTML is the same for everyone, so a reload can't change it.
-    if (event.method === 'GET' && !import.meta.prerender) {
+    if (method === 'GET' && !import.meta.prerender) {
       // doctor-disable-next-line nuxt/security/no-unsafe-usehead-script -- The first-party script must run inline and block parsing. Its source uses only the validated build-time cookie name, not request data.
       useHead({
         htmlAttrs: { 'data-time-zone': timeZone },

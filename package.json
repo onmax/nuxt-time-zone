@@ -49,8 +49,7 @@
     "brand": "node --no-warnings .github/scripts/brand.ts"
   },
   "dependencies": {
-    "@nuxt/kit": "catalog:prod",
-    "h3": "catalog:prod"
+    "@nuxt/kit": "catalog:prod"
   },
   "devDependencies": {
     "@nuxt/module-builder": "catalog:build",
