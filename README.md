@@ -8,7 +8,7 @@
 
 [![CI](https://comark-ui.onmax.me/badge.svg?source=github-actions&repository=onmax%2Fnuxt-time-zone&workflow=ci.yml&icon=github)](https://github.com/onmax/nuxt-time-zone/actions/workflows/ci.yml)
 [![npm version](https://comark-ui.onmax.me/badge.svg?source=npm-version&package=nuxt-time-zone)](https://npmjs.com/package/nuxt-time-zone)
-[![for Nuxt 4](https://comark-ui.onmax.me/badge.svg?label=for&value=Nuxt%204)](https://nuxt.com)
+[![for Nuxt 4.6+](https://comark-ui.onmax.me/badge.svg?label=for&value=Nuxt%204.6%2B)](https://nuxt.com)
 [![license: MIT](https://comark-ui.onmax.me/badge.svg?label=license&value=MIT)](./LICENSE)
 
 The visitor's time zone, the same on the server and the client. No hydration mismatches on dates.
@@ -16,6 +16,8 @@ The visitor's time zone, the same on the server and the client. No hydration mis
 https://github.com/user-attachments/assets/fa89e04d-260b-422c-b670-acdda944b8cb
 
 ## Install
+
+Requires Nuxt 4.6 or later.
 
 ```sh
 npx nuxi module add nuxt-time-zone
